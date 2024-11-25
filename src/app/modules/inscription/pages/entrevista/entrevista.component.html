@@ -1,0 +1,195 @@
+<div class="p-2">
+  <div *ngIf="isOpenCohorte; else noCohorte">
+    <!-- title -->
+    <div>
+      <h1 class="font-bold text-2xl mb-4 mt-7">
+        <i class="pi pi-link" style="font-size: 1.5rem"></i> Anexe el link de
+        reunión a la entrevista
+      </h1>
+    </div>
+
+    <!-- Contenedor General -->
+    <div class="mb-9">
+      <!-- Contenedor de para enviar el link de la reunión -->
+      <form [formGroup]="entrevistaForm">
+        <div class="flex flex-col w-full">
+          <div class="flex flex-row">
+          <input
+            type="text"
+            placeholder="https://meet.google.com/......"
+            class="py-3 px-6 w-full rounded-md outline-none inputLink shadow-lg"
+            formControlName="enlace"
+            id="enlace"
+          />
+          <button
+          #algo
+          *ngIf="hideButton"
+          (click)="sendLink()"
+          [disabled]="entrevistaForm.invalid && fechaEntrevistaForm"
+          class="bg-sky-500 w-[200px] text-white rounded-md font-semibold hover:bg-sky-600 transition-colors"
+        >
+        <i class="pi pi-pencil"></i>
+          Actualizar enlace
+        </button>
+        <button
+          #algo
+          *ngIf="!hideButton"
+          (click)="sendLink()"
+          [disabled]="entrevistaForm.invalid && fechaEntrevistaForm"
+          class="bg-red-600 ml-auto px-10 text-white rounded-md font-semibold hover:bg-red-700 transition-colors"
+        >
+          Enviar Enlace
+        </button>
+      </div>
+          <span
+            *ngIf="isValidField('enlace', 1)"
+            class="text-red-500 font-semibold"
+          >
+            Este campo es requerido
+          </span>
+          <div
+            *ngIf="
+              entrevistaForm.get('enlace')?.invalid &&
+              (entrevistaForm.get('enlace')?.dirty ||
+                entrevistaForm.get('enlace')?.touched)
+            "
+          >
+            <div
+              *ngIf="entrevistaForm.get('enlace')?.hasError('pattern')"
+              class="mt-5 text-red-500 font-semibold"
+            >
+              URL del enlace de la entrevista incorrecta (https://www... .com)
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Tabla de listado de aspirantes -->
+    <div class="shadow-lg bg-white">
+      <div class="mb-2 border-b border-red-600">
+        <h2 class="py-3 px-4 font-semibold">Listado de aspirantes</h2>
+      </div>
+
+      <!-- Contenedor para la tabla -->
+      <div class="py-2">
+        <!-- Contenedor para mostrar las aspirantes -->
+        <div class="px-4">
+          <p-table [value]="users" [paginator]="true" [rows]="5">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Telefono</th>
+                <th>Asignar Horario</th>
+                <th>Calificar</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user>
+              <tr class="even:bg-slate-300">
+                <td>{{ user.nombre }}</td>
+                <td>{{ user.correoPersonal }}</td>
+                <td>{{ user.telefono }}</td>
+                <!-- Columna de la fecha -->
+                <td>
+                  <form [formGroup]="fechaEntrevistaForm">
+                    <div class="flex flex-col">
+                      <div class="flex flex-row justify-center">
+                        <input
+                          type="datetime-local"
+                          class="w-60 p-3 rounded-l-lg border-slate-200 border-2"
+                          formControlName="fechaEntr"
+                        />
+                        <button
+                          class="rounded-r-lg bg-sky-600 hover:bg-sky-700 py-2 px-3"
+                          (click)="sendDate(user.id)"
+                          [disabled]="fechaEntrevistaForm.invalid"
+                        >
+                          <i class="pi pi-check" style="color: white"></i>
+                        </button>
+                      </div>
+                      <span
+                        *ngIf="isValidField('fechaEntr', 2)"
+                        class="text-red-500 font-semibold"
+                      >
+                        Este campo es requerido
+                      </span>
+                    </div>
+                  </form>
+                </td>
+                <!-- Columna de la calificación -->
+                <td>
+                  <form [formGroup]="puntajeEntrevistaForm">
+                    <div class="flex flex-col">
+                      <div class="flex flex-row justify-center">
+                        <input
+                          type="text"
+                          class="w-28 p-3 rounded-l-lg border-slate-200 border-2"
+                          formControlName="puntaje"
+                          [disabled]="puntajeEntrevistaForm.invalid"
+                        />
+
+                        <button
+                          class="rounded-r-lg bg-sky-600 hover:bg-sky-700 py-2 px-3"
+                          (click)="sendPuntaje(user.id)"
+                          [disabled]="puntajeEntrevistaForm.invalid"
+                        >
+                          <i class="pi pi-check" style="color: white"></i>
+                        </button>
+                      </div>
+                      <span
+                        *ngIf="isValidField('puntaje', 3)"
+                        class="text-red-500 font-semibold"
+                      >
+                        Este campo es requerido
+                      </span>
+                      <span
+                        *ngIf="puntajeEntrevistaForm.hasError('mayor15')"
+                        class="text-red-500 font-semibold"
+                      >
+                        Máximo puntaje por asignar es 15
+                      </span>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ngx-spinner
+  bdColor="rgba(0, 0, 0, 0.8)"
+  size="medium"
+  color="#fff"
+  type="ball-scale-multiple"
+  [fullScreen]="true"
+>
+  <p class="text-white">Cargando...</p>
+</ngx-spinner>
+
+  <!-- Letrero de que no hay nada por mostrar -->
+  <ng-template #noCohorte>
+    <div class="p-4 border-t-2 border-orange-300 bg-white shadow-lg rounded-md">
+      <!-- header -->
+      <div class="border-b pb-2">
+        <h2>
+          <i class="pi pi-info-circle"></i>
+          No hay un cohorte abierto
+        </h2>
+      </div>
+      <!-- abrir cohorte -->
+      <div>
+        <p class="my-4">¿Desea abrir un cohorte?</p>
+        <a
+          routerLink="/inscription/admin/cohortes"
+          class="py-1 px-6 bg-red-600 text-white hover:bg-red-400 transition-colors rounded-md"
+          >Abrir cohorte</a
+        >
+      </div>
+    </div>
+  </ng-template>
+</div>

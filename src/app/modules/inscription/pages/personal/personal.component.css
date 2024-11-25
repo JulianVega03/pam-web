@@ -1,0 +1,21 @@
+th, td{
+    text-align: center !important;
+}
+
+tr:nth-child(2n){
+    background-color: #f1f1f1;
+}
+
+.modal{
+    background-color: rgba(0 0 0 / .5);
+}
+
+.open{
+    transform: scale(1);
+}
+
+
+.inputPersonal:hover,
+.inputPersonal:focus{
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.3);
+}

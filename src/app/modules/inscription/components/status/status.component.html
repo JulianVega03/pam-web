@@ -1,0 +1,42 @@
+<div *ngIf="admitido !== 'ADMITIDO'; else admitidoMaestria">
+  <div class="rounded-lg border-black border-2 w-[70%] lg:max-w-[60%] mx-auto py-5 px-3 mb-7">
+    <h1 class="font-bold text-xl">Entrevista admisión a maestría</h1>
+    <h2 class="font-bold">
+      Fecha de la entrevista:
+      <span *ngIf="showDE">{{ fechaEntrevista }}</span>
+      <span *ngIf="!showDE">{{ message }}</span>
+    </h2>
+    <h3 class="font-bold">
+      Hora:
+      <span *ngIf="showDE">{{ horaEntrevista }}</span>
+      <span *ngIf="!showDE">{{ message }}</span>
+    </h3>
+    <h4 class="font-bold">
+      Enlace de la reunión a la entrevista:
+      <a href="{{ enlaceEntrevista }}" class="text-blue-800" target="_blank">{{ enlaceEntrevista }}</a>
+    </h4>
+  </div>
+  <div class="rounded-lg border-black border-2 w-[70%] lg:max-w-[60%] mx-auto py-5 px-3">
+    <h1 class="font-bold text-xl">Prueba</h1>
+    <h2 class="font-bold">
+      Fecha límite de presentacion:
+      <span *ngIf="showDP">{{ fechaPrueba }}</span>
+      <span *ngIf="!showDP">{{ message }}</span>
+    </h2>
+    <h3 class="font-bold">
+      Hora límite de presentacion:
+      <span *ngIf="showDP">{{ horaPrueba }}</span>
+      <span *ngIf="!showDP">{{ message }}</span>
+    </h3>
+    <h4 class="font-bold">
+      Enlace de la prueba:
+      <a href="{{ enlacePrueba }}" class="text-blue-800" target="_blank">{{ enlacePrueba }}</a>
+    </h4>
+  </div>
+</div>
+
+<ng-template #admitidoMaestria>
+  <div>
+    <p>¡Has sido admitido a la maestría!</p>
+  </div>
+</ng-template>

@@ -1,0 +1,39 @@
+<!-- Contenedor general -->
+<div class="m-4">
+    <!-- Contenedor para el botón de volver -->
+    <div class="py-3 ">
+        <a [routerLink]="['/inscription/backlog','home']" class="flex items-center text-center text-lg transition-colors hover:text-gray-400" >
+            <i class="pi pi-angle-left"></i>
+            Volver
+        </a>
+    </div>
+    <!-- Contenedor para el tab -->
+    <div class="bg-white rounded-lg flex justify-between p-4 mb-6">
+        <div >
+            <button (click)="changeCurrentTabIndex(0)" class="flex flex-col md:flex-row items-center gap-2 transition-colors hover:text-gray-400"
+                    [ngClass]="{'text-gray-400': currentTab === 0}">
+                <i class="pi pi-folder"></i>
+                Información personal
+            </button>
+        </div>
+        <div >
+            <button (click)="changeCurrentTabIndex(1)" class="flex flex-col md:flex-row items-center gap-2 transition-colors hover:text-gray-400"
+                    [ngClass]="{'text-gray-400': currentTab === 1}" >
+                <i class="pi pi-file"></i>
+                Documentos
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenedor para cargar el componente correspondiente -->
+    <div class="bg-white p-2 border-t-2 border-t-black rounded-md shadow-xl">
+        <div *ngIf="currentTab === 0; else documents">
+            <app-table-user [user]="user"></app-table-user>
+        </div>
+        <ng-template #documents>
+            <div class="p-4">
+                <app-documents-views [user]="user"></app-documents-views>
+            </div>
+        </ng-template>
+    </div>
+</div>

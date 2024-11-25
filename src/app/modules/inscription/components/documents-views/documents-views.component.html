@@ -1,0 +1,367 @@
+<!-- Contenedor general -->
+<div>
+  <!-- Contenedor para la imagen, nombre del aspirante y el botón de descargar los documentos -->
+  <div class="flex flex-col items-center justify-between mb-6 md:flex-row">
+    <!-- contenedor para la información del aspirante -->
+    <div class="flex items-center gap-2 text-center mb-6 md:gap-4">
+      <div class="w-[50px]">
+        <img
+          src="assets/no-img-user.jpg"
+          alt="sin imagen de perfil"
+          class="w-full rounded-full"
+        />
+      </div>
+      <span class="font-bold"> {{ user.nombre }} {{ user.apellido }} </span>
+    </div>
+    <div *ngIf="role === 'ADMIN'">
+      <button (click)="showDialog()" class="bg-sky-500 p-2 mb-3 rounded-md text-white" *ngIf="hideButton">
+       Calificar
+        <i class="pi pi-check"></i>
+      </button>
+      <div class="mb-4" *ngIf="!hideButton">
+        <label class="text-red-500 text-center font-bold">{{message}}</label>
+      </div>
+    </div>
+    <!-- Modal para enviar las calificaciones -->
+            <p-dialog header="Header" [modal]="true" [(visible)]="visible" [style]="{ width: '450px' }">
+              <ng-template pTemplate="header">
+                  <span class="text-xl font-bold text-black">Calificaciones finales</span>
+              </ng-template>
+              <form [formGroup]="puntajeDocumentosForm">
+                <!-- Puntaje Cartas referencia -->
+                  <div class="flex flex-col mx-auto" >
+                    <h2 class="mb-4 font-bold">Puntaje total de cartas de referencia</h2>
+                    <input
+                      type="number"
+                      [max] = "15"
+                      id="pCR"
+                      class="w-full p-3 rounded-lg border-slate-200 border-2"
+                      formControlName="pCR"/>
+                  </div>
+                  <!-- Validaciones Cartas referencia -->
+                  <div class="text-center mb-3">
+                    <span
+                      *ngIf="isValidField('pCR')"
+                      class="text-red-500 font-semibold" >
+                        Este campo es requerido
+                    </span>
+                    <span
+                      *ngIf="isMaxValueExceeded('pCR',15)"
+                      class="text-red-500 font-semibold">
+                        Puntaje máximo es de 15
+                    </span>
+                  </div>
+                  <!-- Puntaje otas de Pregrado -->
+                  <div class="flex flex-col mx-auto" >
+                    <h2 class="mb-4 font-bold">Puntaje total de Notas de Pregrado</h2>
+                    <input
+                      type="number"
+                      [max] = "20"
+                      id="pNP"
+                      class="w-full p-3 rounded-lg border-slate-200 border-2"
+                      formControlName="pNP"/>
+                  </div>
+                  <!-- Validaciones Notas de pregrado -->
+                  <div class="text-center mb-3">
+                    <span
+                      *ngIf="isValidField('pNP')"
+                      class="text-red-500 font-semibold">
+                        Este campo es requerido
+                    </span>
+                    <span
+                      *ngIf="isMaxValueExceeded('pNP', 20)"
+                      class="text-red-500 font-semibold">
+                        Puntaje máximo es de 20
+                    </span>
+                  </div>
+                  <!-- Puntaje Experiencia Laboral -->
+                  <div class="flex flex-col mx-auto" >
+                    <h2 class="mb-4 font-bold">Puntaje Experiencia Laboral</h2>
+                      <input
+                        type="number"
+                        [max] = "2.5"
+                        id="pEL"
+                        class="w-full p-3 rounded-lg border-slate-200 border-2"
+                        formControlName="pEL"/>
+                  </div>
+                  <!-- Validaciones Experiencia laboral -->
+                  <div class="text-center mb-3">
+                    <span
+                      *ngIf="isValidField('pEL')"
+                      class="text-red-500 font-semibold" >
+                        Este campo es requerido
+                    </span>
+                    <span
+                      *ngIf="isMaxValueExceeded('pEL',2.5)"
+                      class="text-red-500 font-semibold">
+                        Puntaje máximo es de 2.5
+                    </span>
+                  </div>
+                  <!-- Puntaje Publicaciones y participaciones en congresos -->
+                  <div class="flex flex-col mx-auto" >
+                    <h2 class="mb-4 font-bold">Puntaje Publicaciones y participaciones en congresos</h2>
+                      <input
+                        type="number"
+                        [max] = "5"
+                        id="pPU"
+                        class="w-full p-3 rounded-lg border-slate-200 border-2"
+                        formControlName="pPU"/>
+                  </div>
+                  <!-- Validaciones Publicaciones y participaciones en congresos -->
+                  <div class="text-center mb-3">
+                    <span
+                      *ngIf="isValidField('pPU')"
+                      class="text-red-500 font-semibold" >
+                        Este campo es requerido
+                    </span>
+                    <span
+                      *ngIf="isMaxValueExceeded('pPU',5)"
+                      class="text-red-500 font-semibold">
+                        Puntaje máximo es de 5
+                    </span>
+                  </div>
+                  <!-- Puntaje Distinciones académicas -->
+                  <div class="flex flex-col mx-auto" >
+                    <h2 class="mb-4 font-bold">Puntaje Distinciones académicas</h2>
+                      <input
+                        type="number"
+                        [max] = "2.5"
+                        id="pDA"
+                        class="w-full p-3 rounded-lg border-slate-200 border-2"
+                        formControlName="pDA"/>
+                  </div>
+                  <!-- Validaciones Distinciones Académicas -->
+                  <div class="text-center mb-3">
+                    <span
+                      *ngIf="isValidField('pDA')"
+                      class="text-red-500 font-semibold" >
+                        Este campo es requerido
+                    </span>
+                    <span
+                      *ngIf="isMaxValueExceeded('pDA',2.5)"
+                      class="text-red-500 font-semibold">
+                      Puntaje máximo es de 2.5
+                    </span>
+                </div>
+              </form>
+              <ng-template pTemplate="footer">
+                  <p-button icon="pi pi-check"
+                  (click)="sendPuntaje(user.id)"
+                  [disabled]="puntajeDocumentosForm.invalid"
+                  label="Enviar" styleClass="p-button-success"></p-button>
+              </ng-template>
+          </p-dialog>
+      <!-- Fin del modal de calificaciones -->
+
+    <button (click)="downloadAllDocuments()" class="bg-green-500 p-2 rounded-md text-white">
+      Descargar
+      <i class="pi pi-download"></i>
+    </button>
+  </div>
+
+  <!-- contenedor para mostrar los documentos -->
+  <div>
+    <h2 class="mb-4 font-bold">Documentos del aspirante</h2>
+    <!-- contenedor para todos los documentos -->
+    <div>
+      <!-- contenedor para cada documento -->
+      <div
+        class="card px-3 pb-3 mb-4 rounded-md"
+        *ngFor="let doc of docs; index as i"
+      >
+        <!-- estado (solo pa ver que funcione) -->
+        <div class="flex justify-between items-center py-3">
+          <div
+            [ngClass]="getColorTarget(doc.estado.id)"
+            class="rounded-full p-2 w-2 h-2"
+          ></div>
+
+          <div
+            class="inline-block py-1 px-4 rounded-md font-bold"
+            [ngClass]="getColorTarget(doc.estado.id)"
+          >
+            {{ doc.estado.nombre | titlecase }}
+          </div>
+        </div>
+
+
+        <!-- titulo indicativo del documento -->
+        <h3 class="p-3 text-center md:text-start font-bold">
+          <!-- <i class="pi pi-camera mr-2"></i> -->
+          {{ doc.documento.nombre }}
+        </h3>
+
+        <!-- contenedor de los inputs -->
+        <div
+          class="flex flex-col gap-2 my-3 md:flex-row md:items-center"
+          [ngClass]="{ 'justify-center': doc.estado.id === 4 }"
+        >
+          <!-- Contenedor para los botones para descargar y previsualizar -->
+          <div class="flex flex-col md:justify-around md:flex-row md:w-[50%]"  *ngIf=" doc.estado.id !== 1">
+            <a
+              [href]="doc.url"
+              target="_blank"
+              class="font-bold mb-3 text-center md:mb-0 bg-zinc-200 inline-block py-2 px-6 rounded-md hover:bg-zinc-400 transition-colors"
+            >
+              Previsualizar Documento
+              <i class="ml-2 pi pi-search"></i>
+            </a>
+          </div>
+
+
+
+          <!-- Contenedor para aprobar o denegar documentos -->
+          <div
+            class="flex justify-center gap-2 md:w-[50%]"
+            *ngIf="doc.estado.id !== 4 && doc.estado.id !== 1"
+          >
+            <button
+              class="w-[50%] px-3 py-1 rounded-md font-semibold text-center text-white bg-green-600 transition-colors hover:bg-green-700"
+              (click)="confirmTrigger(doc.documento.nombre, doc.documento.id, i)"
+            >
+              <span class="hidden md:inline-block mr-2">Aprobar</span>
+              <i class="pi pi-check"></i>
+            </button>
+            <button
+              class="w-[50%] px-3 py-1 rounded-md font-semibold text-center text-white bg-red-600 transition-colors hover:bg-red-700"
+              (click)="reject(doc)"
+            >
+              <span class="hidden md:inline-block mr-2">Rechazar</span>
+              <i class="pi pi-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal contenedor -->
+<div
+  class="w-full h-full fixed z-50 top-0 left-0 p-4 bg-shadow overflow-y-auto flex justify-center"
+  *ngIf="showModalReject"
+>
+  <div class="bg-white w-[90%] max-w-[600px] min-h-full p-4 rounded-lg">
+    <!-- contenedor para el header -->
+    <div class="mb-4">
+      <h2 class="text-center md:text-left">
+        ¿Desea rechazar el documento {{ rejectDoc.nombre }}?
+        <span class="block">Especifique las razones: </span>
+      </h2>
+    </div>
+    <!-- Contenedor para la opcion :) -->
+    <div class="mb-4">
+      <div class="flex items-start gap-3 px-4 mb-5">
+        <div class="pt-1">
+          <input
+            value="El documento no se ve correctamente"
+            [(ngModel)]="selectReject"
+            type="radio"
+            name="correcion"
+            id="1"
+          />
+        </div>
+        <label class="cursor-pointer" for="1"
+          >El documento no se ve correctamente</label
+        >
+      </div>
+
+      <div class="flex items-start gap-3 px-4 mb-5">
+        <div class="pt-1">
+          <input
+            value="El documento no cumple con los formatos institucionales"
+            [(ngModel)]="selectReject"
+            type="radio"
+            name="correcion"
+            id="2"
+          />
+        </div>
+        <label class="cursor-pointer" for="2"
+          >El documento no cumple con los formatos institucionales</label
+        >
+      </div>
+
+      <div class="flex items-start gap-3 px-4 mb-5">
+        <div class="pt-1">
+          <input
+            value="El documento presenta incoherencias"
+            [(ngModel)]="selectReject"
+            type="radio"
+            name="correcion"
+            id="3"
+          />
+        </div>
+        <label class="cursor-pointer" for="3"
+          >El documento presenta incoherencias</label
+        >
+      </div>
+
+      <div class="flex items-start gap-3 px-4 mb-5">
+        <div class="pt-1">
+          <input
+            value="El documento no es el que se solicitó"
+            [(ngModel)]="selectReject"
+            type="radio"
+            name="correcion"
+            id="4"
+          />
+        </div>
+        <label class="cursor-pointer" for="4"
+          >El documento no es el que se solicitó</label
+        >
+      </div>
+
+      <div class="px-4 mb-5">
+        <div class="flex items-start gap-3">
+          <div class="pt-1">
+            <input
+              value="Otro"
+              [(ngModel)]="selectReject"
+              type="radio"
+              name="correcion"
+              id="5"
+            />
+          </div>
+          <label class="cursor-pointer" for="5">Otro:</label>
+        </div>
+        <div>
+          <textarea
+            [disabled]="selectReject !== 'Otro'"
+            [(ngModel)]="other"
+            name="correcionEspecifica"
+            id=""
+            cols="30"
+            rows="7"
+            class="w-full border-black border rounded-md outline-none p-2 resize-none"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- contenedor para los botones -->
+    <div class="flex justify-around items-center gap-4">
+      <button
+        (click)="rejectDocument(0)"
+        class="py-1 px-6 rounded-md font-bold bg-green-600 transition-colors hover:bg-green-700 text-white"
+      >
+        Rechazar
+      </button>
+      <button
+        (click)="rejectDocument(-1)"
+        class="py-1 px-6 rounded-md font-bold bg-red-600 transition-colors hover:bg-red-700 text-white"
+      >
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>
+
+<ngx-spinner
+bdColor="rgba(0, 0, 0, 0.8)"
+size="medium"
+color="#fff"
+type="ball-scale-multiple"
+[fullScreen]="true"
+>
+<p class="text-white">Cargando...</p>
+</ngx-spinner>

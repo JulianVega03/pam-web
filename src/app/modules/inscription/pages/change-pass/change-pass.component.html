@@ -1,0 +1,90 @@
+<app-dash-navbar></app-dash-navbar>
+<div class="flex flex-col md:flex-row ">
+  <!-- Contenedor Imagen -->
+  <div class="w-2/4 relative mx-auto pt-5 md:top-10">
+    <img
+      class="inline-block rounded-full md:w-2/5 md:ml-[30%]"
+      src="assets/no-img-user.jpg"
+      alt=""
+    />
+    <div class="mt-8 text-3xl font-bold text-center">
+      <span>{{userName}}</span>
+  </div>
+    </div>
+
+  <!-- Contenedor Formulario -->
+  <div class="md:basis-1/2 md:relative md:top-32">
+    <form [formGroup]="confirmForm" class="pb-4 mb-6" autocomplete="off">
+      <div class="p-4 my-6 text-center">
+        <h2 class="mb-10 text-3xl font-bold">Cambiar la Contraseña</h2>
+        <div class="mb-5 max-w-xl mx-auto">
+        <span class="p-float-label mb-1">
+          <input
+            class="w-full"
+            pInputText
+            id="currentPass"
+            formControlName="currentPass"
+            autocomplete="off"
+          />
+          <label for="email">Contraseña Actual</label>
+        </span>
+        <span
+          *ngIf="isValidField('currentPass')"
+          class="text-red-500 font-semibold">
+          Este campo es requerido
+        </span>
+      </div>
+      <!-- Contraseña nueva -->
+      <div class="mb-5 max-w-xl mx-auto">
+      <span class="p-float-label mb-1">
+        <input
+          class="w-full"
+          pInputText
+          id="newPass"
+          formControlName="newPass"
+          autocomplete="off"
+        />
+        <label for="email">Contraseña Nueva</label>
+      </span>
+        <span *ngIf="isValidField('newPass')"
+        class="text-red-500 font-semibold mb-2">
+          Este campo es requerido
+        </span>
+      </div>
+
+      <!-- Confirmación Contraseña -->
+      <div class="mb-5 max-w-xl mx-auto">
+          <span class="p-float-label mb-1">
+            <input
+              class="w-full"
+              pInputText
+              id="repeatPass"
+              formControlName="repeatPass"
+              autocomplete="off"
+            />
+            <label for="email">Repita Contraseña Nueva</label>
+          </span>
+        <span *ngIf="isValidField('repeatPass')"
+        class="text-red-500 font-semibold mb-2">
+          Este campo es requerido
+        </span>
+        <div *ngIf="confirmForm.hasError('matchingFields')"
+        class="text-red-500 font-semibold">
+          Los campos no coinciden.
+        </div>
+      </div>
+
+      </div>
+      <div class="flex justify-between w-11/12 max-w-xl mx-auto mt-8">
+        <p-button routerLink="/inscription/aspirante/personal-info" label="Volver" styleClass="p-button-secondary"></p-button>
+        <p-button
+          [disabled]="confirmForm.invalid"
+          (click) = "changePass()"
+          label="Guardar"
+          styleClass="p-button-secondary"
+        ></p-button>
+      </div>
+    </form>
+  </div>
+</div>
+

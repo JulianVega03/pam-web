@@ -1,0 +1,651 @@
+<div class="w-full min-h-full">
+  <!-- Contenedor de los taps -->
+  <div class="mb-4">
+    <ul
+      class="flex justify-between items-center text-center gap-2 shadow-lg rounded-md"
+    >
+      <li class="hover:bg-gray-200 transition-colors rounded-l-md">
+        <button
+          class="p-3"
+          (click)="changeTap(0)"
+          [ngClass]="{ 'bg-gray-100': tabs[0] }"
+        >
+          <i class="pi pi-user"></i>
+          Datos personales
+        </button>
+      </li>
+      <li class="hover:bg-gray-200 transition-colors">
+        <button
+          class="p-3"
+          (click)="changeTap(1)"
+          [ngClass]="{ 'bg-gray-100': tabs[1] }"
+        >
+          <i class="pi pi-user"></i>
+          Datos laborales
+        </button>
+      </li>
+      <li class="hover:bg-gray-200 transition-colors rounded-r-md">
+        <button
+          class="p-3"
+          (click)="changeTap(2)"
+          [ngClass]="{ 'bg-gray-100': tabs[2] }"
+        >
+          <i class="pi pi-pencil"></i>
+          Datos Académicos
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Contenedor general para todo el formulario -->
+  <div class="bg-slate-50 pb-4 rounded-md w-full px-4">
+    <form [formGroup]="mainForm">
+      <!-- contenedor general de todos los inputs -->
+      <div>
+        <!-- Contenedor de los datos personales -->
+        <div *ngIf="tabs[0]">
+          <div class="grid-container gap-5 p-3">
+            <!-- nombre completo -->
+            <div class="w-full">
+              <label class="text-sm inline-block py-3" for="">Nombres</label>
+              <div>
+                <input
+                  pInputText
+                  class="block w-full border-black border p-3"
+                  type="text"
+                  formControlName="name"
+                  placeholder="Pepito Andrés"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      getControl('name')!['invalid'] &&
+                      getControl('name')!['touched']
+                  }"
+                />
+                <div
+                  class="p-2 text-red-500 text-sm"
+                  *ngIf="
+                    getControl('name')!['invalid'] &&
+                    getControl('name')!['touched']
+                  "
+                >
+                  <span class="">El nombre es obligatorio</span>
+                  <i class="ml-2 pi pi-exclamation-circle"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- apellidos completo -->
+            <div class="w-full">
+              <label class="text-sm inline-block py-3" for="">Apellidos</label>
+              <div>
+                <input
+                  pInputText
+                  class="block w-full border-black border p-3"
+                  type="text"
+                  formControlName="familyName"
+                  placeholder="Perez Sierra"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      getControl('familyName')!['invalid'] &&
+                      getControl('familyName')!['touched']
+                  }"
+                />
+                <div
+                  class="p-2 text-red-500 text-sm"
+                  *ngIf="
+                    getControl('familyName')!['invalid'] &&
+                    getControl('familyName')!['touched']
+                  "
+                >
+                  <span class="">El apellido es obligatorio</span>
+                  <i class="ml-2 pi pi-exclamation-circle"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- lugar de nacimiento -->
+            <div class="w-full">
+              <label class="text-sm inline-block py-3"
+                >Lugar de nacimiento</label
+              >
+              <div class="p-fluid">
+                <p-dropdown
+                  [options]="countries"
+                  formControlName="countryOfBirth"
+                  optionLabel="name.common"
+                  placeholder="Pais de nacimiento"
+                  optionValue="name.common"
+                  (onChange)="onForeignCountryChange($event.value)"
+                  [filter]="true"
+                  filterBy="name.common"
+                >
+                </p-dropdown>
+              </div>
+            </div>
+
+            <!-- Departamento  -->
+            <ng-container *ngIf="!foreignCountry">
+              <div class="w-full">
+                <label class="text-sm inline-block py-3"
+                  >Deparmento de residencia</label
+                >
+                <div class="p-fluid">
+                  <p-dropdown
+                    [options]="states"
+                    formControlName="residenceState"
+                    optionLabel="departamento"
+                    [required]="!foreignCountry"
+                    (onChange)="setMunicipio($event.value)"
+                    optionValue="departamento"
+                    placeholder="Departamento"
+                    [disabled]="foreignCountry"
+                    StyleClass="max-w"
+                    [filter]="true"
+                    filterBy="departamento"
+                  >
+                  </p-dropdown>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- municipio  -->
+            <ng-container *ngIf="!foreignCountry">
+              <div class="w-full">
+                <label class="text-sm inline-block py-3"
+                  >Municipio de residencia</label
+                >
+                <div class="p-fluid">
+                  <p-dropdown
+                    [options]="towns"
+                    optionLabel="name"
+                    formControlName="residenceTown"
+                    [required]="!foreignCountry"
+                    [disabled]="foreignCountry"
+                    [filter]="true"
+                    filterBy="name"
+                  ></p-dropdown>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- residencia -->
+            <div class="w-full">
+              <label class="text-sm inline-block py-3"
+                >Dirección de residencia</label
+              >
+              <div>
+                <input
+                  class="block w-full border-black border p-3"
+                  pInputText
+                  placeholder="Av7 #12"
+                  formControlName="residenceDirection"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      getControl('residenceDirection')!['invalid'] &&
+                      getControl('residenceDirection')!['touched']
+                  }"
+                />
+                <div
+                  class="p-2 text-red-500 text-sm"
+                  *ngIf="
+                    getControl('residenceDirection')!['invalid'] &&
+                    getControl('residenceDirection')!['touched']
+                  "
+                >
+                  <span class="">La direccion es obligatoria</span>
+                  <i class="ml-2 pi pi-exclamation-circle"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Telefono -->
+            <div class="w-full">
+              <label class="text-sm inline-block py-3">Teléfono</label>
+              <div>
+                <input
+                  class="block w-full border-black border p-3"
+                  pInputText
+                  type="number"
+                  inputType="number"
+                  pattern="[0-9]*"
+                  formControlName="telephoneNumber"
+                  placeholder="321 3152048"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      getControl('telephoneNumber')!['invalid'] &&
+                      getControl('telephoneNumber')!['touched']
+                  }"
+                />
+
+                <div
+                  class="p-2 text-red-500 text-sm"
+                  *ngIf="
+                    getControl('telephoneNumber')!['invalid'] &&
+                    getControl('telephoneNumber')!['touched']
+                  "
+                >
+                  <span class="">Formato incorrecto</span>
+                  <i class="ml-2 pi pi-exclamation-circle"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- numero identidad -->
+            <div class="w-full">
+              <label class="text-sm inline-block py-3" for=""
+                >Número documento identidad</label
+              >
+              <div>
+                <input
+                  pInputText
+                  class="block w-full border-black border p-3"
+                  type="number"
+                  inputType="number"
+                  pattern="[0-9]*"
+                  formControlName="id"
+                  placeholder="1095978369"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      getControl('id')!['invalid'] &&
+                      getControl('id')!['touched']
+                  }"
+                />
+                <div
+                  class="p-2 text-red-500 text-sm"
+                  *ngIf="
+                    getControl('id')!['invalid'] && getControl('id')!['touched']
+                  "
+                >
+                  <span class="">Formato incorrecto</span>
+                  <i class="ml-2 pi pi-exclamation-circle"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- fecha expedicion -->
+            <div class="w-full">
+              <label class="text-sm inline-block py-3" for=""
+                >Fecha de Expedición del documento de identidad</label
+              >
+              <div class="p-fluid">
+                <p-calendar
+                  formControlName="idExpeditionDate"
+                  id="idExpeditionDate"
+                  panelStyleClass="small-calendar-panel"
+                  [showIcon]="true"
+                  [maxDate]="maxDate"
+                ></p-calendar>
+              </div>
+              <div
+                class="p-2 text-red-500 text-sm"
+                *ngIf="
+                  getControl('idExpeditionDate')!['invalid'] &&
+                  getControl('idExpeditionDate')!['touched']
+                "
+              >
+                <span class="">El campo es obligatorio</span>
+                <i class="ml-2 pi pi-exclamation-circle"></i>
+              </div>
+            </div>
+
+            <!-- Fecha de nacimiento -->
+            <div class="w-full">
+              <label class="text-sm inline-block py-3"
+                >Fecha de nacimiento</label
+              >
+              <div class="p-fluid">
+                <p-calendar
+                  formControlName="birthDate"
+                  id="birthDate"
+                  panelStyleClass="small-calendar-panel"
+                  [showIcon]="true"
+                  [maxDate]="maxDate"
+                ></p-calendar>
+              </div>
+              <div
+                class="p-2 text-red-500 text-sm"
+                *ngIf="
+                  getControl('birthDate')!['invalid'] &&
+                  getControl('birthDate')!['touched']
+                "
+              >
+                <span class="">El campo es obligatorio</span>
+                <i class="ml-2 pi pi-exclamation-circle"></i>
+              </div>
+            </div>
+
+            <!-- Genero -->
+            <div class="w-full">
+              <label class="text-sm inline-block py-3 mb-4">Sexo biológico</label>
+              <div class="flex justify-between">
+                <div *ngFor="let gender of genders">
+                  <div class="mb-3">
+                    <p-radioButton
+                      [inputId]="gender.key"
+                      [value]="gender"
+                      formControlName="gender"
+                      name="gender"
+                    ></p-radioButton>
+                    <label [for]="gender.name" class="ml-2">{{
+                      gender.name
+                    }}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="my-4 gap-10">
+            <button
+              type="button"
+              (click)="changeTap(1)"
+              class="block ml-auto mr-4 py-2 px-6 bg-red-500 text-white hover:bg-red-600 transition-colors rounded-md"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+
+        <!-- Contenedor datos laborales -->
+        <div *ngIf="tabs[1]">
+          <div class="grid-container gap-5 p-3">
+            <!-- Nombre -->
+            <div>
+              <label class="text-sm inline-block py-3"
+                >Empresa donde trabaja</label
+              >
+              <div>
+                <input
+                  class="block w-full border-black border p-3"
+                  type="text"
+                  pInputText
+                  formControlName="workingEntity"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      getControl('workingEntity')!['invalid'] &&
+                      getControl('workingEntity')!['touched']
+                  }"
+                />
+                <div
+                  class="p-2 text-red-500 text-sm"
+                  *ngIf="
+                    getControl('workingEntity')!['invalid'] &&
+                    getControl('workingEntity')!['touched']
+                  "
+                >
+                  <span class="">El campo es obligatorio</span>
+                  <i class="ml-2 pi pi-exclamation-circle"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Departamento -->
+            <div>
+              <label class="text-sm inline-block py-3"
+                >Departamento donde trabaja</label
+              >
+              <div>
+                <input
+                  class="block w-full border-black border p-3"
+                  type="text"
+                  pInputText
+                  formControlName="workingState"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      getControl('workingState')!['invalid'] &&
+                      getControl('workingState')!['touched']
+                  }"
+                />
+                <div
+                  class="p-2 text-red-500 text-sm"
+                  *ngIf="
+                    getControl('workingState')!['invalid'] &&
+                    getControl('workingState')!['touched']
+                  "
+                >
+                  <span class="">El campo es obligatorio</span>
+                  <i class="ml-2 pi pi-exclamation-circle"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Municipio -->
+            <div>
+              <label class="text-sm inline-block py-3"
+                >Municipio donde trabaja</label
+              >
+              <div>
+                <input
+                  class="block w-full border-black border p-3"
+                  type="text"
+                  pInputText
+                  formControlName="workingTown"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      getControl('workingTown')!['invalid'] &&
+                      getControl('workingTown')!['touched']
+                  }"
+                />
+                <div
+                  class="p-2 text-red-500 text-sm"
+                  *ngIf="
+                    getControl('workingTown')!['invalid'] &&
+                    getControl('workingTown')!['touched']
+                  "
+                >
+                  <span class="">El campo es obligatorio</span>
+                  <i class="ml-2 pi pi-exclamation-circle"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Direccion -->
+            <div>
+              <label class="text-sm inline-block py-3"
+                >Dirección donde trabaja</label
+              >
+              <div>
+                <input
+                  class="block w-full border-black border p-3"
+                  type="text"
+                  pInputText
+                  formControlName="workingDirection"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      getControl('workingDirection')!['invalid'] &&
+                      getControl('workingDirection')!['touched']
+                  }"
+                />
+                <div
+                  class="p-2 text-red-500 text-sm"
+                  *ngIf="
+                    getControl('workingDirection')!['invalid'] &&
+                    getControl('workingDirection')!['touched']
+                  "
+                >
+                  <span class="">El campo es obligatorio</span>
+                  <i class="ml-2 pi pi-exclamation-circle"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botones de siguiente y pa'tras -->
+          <div class="my-4 flex justify-between items-center">
+            <button
+              type="button"
+              (click)="changeTap(0)"
+              class="block py-2 px-6 bg-[#3085d6] text-white hover:bg-[#3085dd] transition-colors rounded-md mx-auto"
+            >
+              Anterior
+            </button>
+            <button
+              type="button"
+              (click)="changeTap(2)"
+              class="block py-2 px-6 bg-red-500 text-white hover:bg-red-600 transition-colors rounded-md mx-auto"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+
+        <!-- Contenedor datos academicos -->
+        <div *ngIf="tabs[2]">
+          <div class="grid-container gap-5 p-3">
+            <!-- Estudios a nivel de formación universitaria (pre - grado) -->
+            <div>
+              <label class="text-sm inline-block py-3"
+                >Estudios a nivel de formación universitaria (pregrado)</label
+              >
+              <div>
+                <input
+                  class="block w-full border-black border p-3"
+                  type="text"
+                  pInputText
+                  formControlName="undergraduateStudies"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      getControl('undergraduateStudies')!['invalid'] &&
+                      getControl('undergraduateStudies')!['touched']
+                  }"
+                />
+                <div
+                  class="p-2 text-red-500 text-sm"
+                  *ngIf="
+                    getControl('undergraduateStudies')!['invalid'] &&
+                    getControl('undergraduateStudies')!['touched']
+                  "
+                >
+                  <span class="">El campo es obligatorio</span>
+                  <i class="ml-2 pi pi-exclamation-circle"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Estudios a nivel de formación avanzada (post - grado) -->
+            <div>
+              <label class="text-sm inline-block py-3"
+                >Estudios a nivel de formación avanzada (postgrado)</label
+              >
+              <div>
+                <input
+                  class="block w-full border-black border p-3"
+                  type="text"
+                  pInputText
+                  formControlName="postgraduateStudies"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      getControl('postgraduateStudies')!['invalid'] &&
+                      getControl('postgraduateStudies')!['touched']
+                  }"
+                />
+                <div
+                  class="p-2 text-red-500 text-sm"
+                  *ngIf="
+                    getControl('postgraduateStudies')!['invalid'] &&
+                    getControl('postgraduateStudies')!['touched']
+                  "
+                >
+                  <span class="">El campo es obligatorio</span>
+                  <i class="ml-2 pi pi-exclamation-circle"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Es egresado de la UFPS? -->
+            <div>
+              <label class="text-sm inline-block w-full py-3 text-center"
+                >¿Es egresado de la UFPS (sede principal)?</label
+              >
+              <div class="md:flex justify-around">
+                <div class="flex align-items-center mt-3">
+                  <p-radioButton
+                    class="mr-2"
+                    name="graduatedFromUFPSYes"
+                    value="yes"
+                    formControlName="graduatedFromUFPS"
+                    name="graduatedFromUFPS"
+                    inputId="yes"
+                  ></p-radioButton>
+                  <label for="yes" class="ml-2">Sí</label>
+                </div>
+
+                <div class="flex align-items-center mt-3">
+                  <p-radioButton
+                    class="mr-2"
+                    name="graduatedFromUFPSNo"
+                    value="no"
+                    formControlName="graduatedFromUFPS"
+                    name="graduatedFromUFPS"
+                    inputId="no"
+                  ></p-radioButton>
+                  <label for="no" class="ml-2">No</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Información de la Experiencia Laboral (Escriba en orden, inicie con la más reciente) -->
+            <div>
+              <label class="text-sm inline-block py-3"
+                >Información de la Experiencia Laboral (Escriba en orden, inicie
+                con la más reciente)</label
+              >
+              <div>
+                <textarea
+                  rows="10"
+                  cols="30"
+                  pInputTextarea
+                  formControlName="workingExperience"
+                  class="block w-full border-black border p-3"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      getControl('workingExperience')!['invalid'] &&
+                      getControl('workingExperience')!['touched']
+                  }"
+                ></textarea>
+                <div
+                  class="p-2 text-red-500 text-sm"
+                  *ngIf="
+                    getControl('workingExperience')!['invalid'] &&
+                    getControl('workingExperience')!['touched']
+                  "
+                >
+                  <span class="">El campo es obligatorio</span>
+                  <i class="ml-2 pi pi-exclamation-circle"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <ngx-spinner
+              bdColor="rgba(0, 0, 0, 0.8)"
+              size="medium"
+              color="#fff"
+              type="ball-scale-multiple"
+              [fullScreen]="true"
+              ><p style="color: white">Cargando...</p></ngx-spinner
+            >
+            <!-- Botones de siguiente y pa'tras -->
+            <div class="my-4 flex justify-between items-center">
+              <button
+                type="button"
+                (click)="changeTap(1)"
+                class="block py-2 px-6 bg-[#3085d6] text-white hover:bg-[#3085dd] transition-colors rounded-md mx-auto"
+              >
+                Anterior
+              </button>
+
+              <button
+                class="block ml-auto bg-blue-500 text-white font-bold py-2 px-4 rounded-full"
+                (click)="registerApplicant()"
+              >
+                Siguiente paso
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<div>
+  <app-dash-navbar></app-dash-navbar>
+</div>
+<div >
+  <div>
+    <div class="p-fluid bg-white mt-6 p-4 w-[90%] mx-auto rounded-md shadow-lg">
+      <p-steps [model]="pasos" [readonly]="true" [activeIndex]="selectedStepIndex"  ></p-steps>
+    </div>
+    <div class="mt-12 mb-4 w-[90%] mx-auto rounded-md shadow-lg bg-slate-50">
+      <router-outlet  ></router-outlet>
+    </div>
+  </div>
+</div>

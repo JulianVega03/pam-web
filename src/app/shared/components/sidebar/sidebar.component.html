@@ -1,0 +1,45 @@
+<div class="w-full min-h-[100%] text-gray-900">
+    <!-- contenedor para la imagen del usuario -->
+    <div class="flex items-start p-6">
+        <!-- w-28 h-28 -->
+        <img class="w-16 h-16 rounded-full border border-black mb-3" src="assets/no-img-user.jpg" alt="sin imagen de perfil">
+        <span class="text-lg font-bold ml-3"> {{user.name}} </span>
+    </div>
+    <!-- contenedor para las opciones -->
+    <div>
+        <div class="text-center">
+            <h3 class="text-xs">Navegación principal</h3>
+        </div>
+        <ul class="my-6 text-center">
+            <li *ngFor="let item of items">
+                <div *ngIf="hasRole(item.roles!)">
+                    <a
+                        routerLinkActive="bg-gray-200"
+                        [routerLink]="item.link ? item.link : null"
+                        (click)="item.hidden = !item.hidden"
+                        class="flex items-center justify-between w-full p-3  hover:bg-gray-200 hover:text-black font-semibold hover:font-bold transition-all cursor-pointer">
+                       <span> <i [class]="item.icon" class="mx-3"></i> {{item.title}} </span>
+                       <span *ngIf="item.children" [ngClass]="{'rotate-90': item.hidden}">
+                            <i class="pi pi-angle-right "></i>
+                       </span>
+                    </a>
+                    <ng-container *ngIf="item.children && item.hidden">
+                        <ul >
+                            <li *ngFor="let child of item.children" >
+                                <a
+                                routerLinkActive="bg-gray-200"
+                                [routerLink]="child.link ? child.link : null"
+                                class="flex items-center justify-between w-full pl-8 pr-3 py-3  hover:bg-gray-200 hover:text-black font-semibold hover:font-bold transition-all cursor-pointer">
+                               <span> <i [class]="child.icon" class="mx-3"></i> {{child.title}} </span>
+                               <span *ngIf="child.children">
+                                    <i class="pi pi-angle-right "></i>
+                               </span>
+                            </a>
+                            </li>
+                        </ul>
+                    </ng-container>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,126 @@
+<div class="px-4 py-3">
+  <!-- Encabezado -->
+  <div class="mb-4">
+    <h2 class="font-bold text-2xl text-center md:text-left">
+      Listado de Cohortes
+    </h2>
+  </div>
+  <!-- Indicador de cohorte abierto -->
+  <div class="mb-6 shadow-lg">
+    <div *ngIf="currentCohorte !== null" class="p-4 font-bold border-t-2 rounded-t-md border-[#3c8dbc] bg-white">
+      <div class="flex justify-between items-center">
+        <p class="mb-4">Actualmente hay un cohorte abierto.</p>
+        <div>
+          <button (click)="editDateClose()" pTooltip="Editar fecha de cierre" [tooltipPosition]="'left'" class="grid place-content-center w-7 h-7 rounded-md bg-emerald-600 text-white py-1 px-3 hover:bg-emerald-700 transition-colors">
+            <i class="pi pi-pencil"></i>
+          </button>
+        </div>
+      </div>
+      <button (click)="closeCohorte()" class="bg-red-600 text-white rounded-md py-1 px-6">
+        Cerrar cohorte
+      </button>
+    </div>
+    <div
+      *ngIf="currentCohorte === null"
+      class="p-4 font-bold border-t-2 rounded-t-md border-[#3c8dbc] bg-white"
+    >
+      <p class="mb-4">No hay cohorte abierto.</p>
+      <button
+        (click)="selectDates = true"
+        class="bg-red-600 text-white rounded-md py-1 px-6 hover:bg-red-700 transition-colors"
+      >
+        Abrir nuevo cohorte
+      </button>
+    </div>
+  </div>
+
+  <!-- Contendor para seleccionar las fechas del cohorte -->
+  <div
+    class="bg-white p-4 mb-4 rounded-md animate__animated animate__fadeInDown"
+    *ngIf="selectDates"
+  >
+    <div class="flex mb-4 cursor-pointer ">
+      <i class="block ml-auto pi pi-times" (click)="selectDates = false"></i>
+    </div>
+    <form [formGroup]="cohorteDates" (ngSubmit)="openCohorteNow()">
+      <div class="flex">
+        <!-- apertura -->
+        <div class="w-full md:w-1/2 mr-2" *ngIf="! editCohorteTrigger">
+          <div class="p-fluid mb-4">
+            <label for="" class="mb-4">Fecha de apertura</label>
+            <p-calendar
+              [minDate]="maxDate"
+              formControlName="startDate"
+              [autoZIndex]="true"
+              panelStyleClass="z-[9999999]"
+            ></p-calendar>
+          </div>
+        </div>
+        <!-- cierre -->
+        <div class="w-full md:w-1/2">
+          <div class="p-fluid mb-4">
+            <label for="" class="mb-4">Fecha de Cierre</label>
+            <p-calendar
+              [minDate]="maxDate"
+              formControlName="endDate"
+            ></p-calendar>
+          </div>
+        </div>
+      </div>
+      <button
+        [disabled]="cohorteDates.invalid"
+        type="submit"
+        class="text-white rounded-md py-1 px-6 ml-auto transition-colors"
+        [ngClass]="{
+          'bg-gray-400': cohorteDates.invalid,
+          'bg-red-500 hover:bg-red-700': !cohorteDates.invalid
+        }"
+      >
+       {{ ! editCohorteTrigger ? 'Abrir cohorte' : 'Actualizar fecha'  }}
+      </button>
+    </form>
+  </div>
+
+  <div *ngIf="listCohortes.length === 0">
+    <p>No hay cohortes.</p>
+  </div>
+  <!-- contenedor para las cards del encabezado -->
+  <div>
+    <div
+      class="rounded-md shadow-md p-5 mb-4 bg-white border-l-emerald-600 border-l-4"
+      *ngFor="let cohorte of listCohortes; index as i"
+    >
+      <!-- Indicadores del cohorte -->
+      <div class="flex items-center justify-between">
+        <span class="inline-block font-bold">
+          Cohorte {{ i + 1 }}
+          {{
+            (cohorte.id ? cohorte.id % 2 : 0) === 0
+              ? "Calendario B"
+              : "Calendario A"
+          }}
+          {{ cohorte.fechaInicio | date : "yyyy" }}
+        </span>
+        <button
+          [routerLink]="[
+            '/inscription/backlog/admin/historico-cohorte',
+            cohorte.id
+          ]"
+          class="bg-red-500 text-white hover:bg-red-600 transition-colors py-1 px-6 rounded-md"
+        >
+          Ver
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ngx-spinner
+    bdColor="rgba(0, 0, 0, 0.8)"
+    size="medium"
+    color="#fff"
+    type="ball-scale-multiple"
+    [fullScreen]="true"
+  >
+    <p class="text-white">Cargando...</p>
+  </ngx-spinner>
+</div>

@@ -1,0 +1,8 @@
+.bodyLog {
+  background-image: url("../../../../../assets/ufpsbg.png");
+  background-size: cover;
+  /* background-color: rgb(209, 206, 206); */
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+}

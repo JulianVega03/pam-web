@@ -1,0 +1,87 @@
+<div class="p-2">
+  <!-- Contenedor del titulo para el encabezado -->
+  <div class="mb-8">
+    <h2 class="font-bold text-2xl mb-6">
+      Aspirantes de la cohorte {{ cohorteId }}
+      {{
+        (cohorteId ? cohorteId % 2 : 0) === 0 ? "Calendario B" : "Calendario A"
+      }}
+    </h2>
+  </div>
+  <!-- Contenedor para la tabla  -->
+  <div>
+    <p-table
+      [value]="aspirantes"
+      [paginator]="true"
+      [rows]="5"
+      id="admitidosTable"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="nombre">Nombre y Apellido</th>
+          <th pSortableColumn="correoPersonal">Correo</th>
+          <th pSortableColumn="telefono">Teléfono</th>
+          <th>Documentos</th>
+          <th>Calificaciones</th>
+          <th>Estado</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-aspirante let-i="rowIndex">
+        <tr>
+          <td>{{ aspirante.nombre }} {{ aspirante.apellido }}</td>
+          <td>{{ aspirante.correoPersonal }}</td>
+          <td>{{ aspirante.telefono }}</td>
+          <td>
+            <button
+              type="button"
+              (click)="descargarDocumentosAspirante(aspirante.id)"
+              [disabled]="
+                aspirante.estado.descripcion !== 'ADMITIDO' &&
+                aspirante.estado.descripcion !== 'ENTREVISTA Y PRUEBA' &&
+                aspirante.estado.descripcion !== 'DOCUMENTOS APROBADOS' &&
+                aspirante.estado.descripcion !== 'DOCUMENTOS ENVIADOS'
+              "
+              [class.disabled-button]="
+                aspirante.estado.descripcion !== 'ADMITIDO' &&
+                aspirante.estado.descripcion !== 'ENTREVISTA Y PRUEBA' &&
+                aspirante.estado.descripcion !== 'DOCUMENTOS APROBADOS' &&
+                aspirante.estado.descripcion !== 'DOCUMENTOS ENVIADOS'
+              "
+              class="flex cursor-pointer items-center mx-auto justify-center gap-2 p-2 rounded-md text-white bg-green-500 transition-colors hover:bg-green-700"
+            >
+              Descargar documentos
+            </button>
+          </td>
+          <td>
+            <button
+              type="button"
+              (click)="descargarCalificacionesAspirante(aspirante.id)"
+              [disabled]="
+                aspirante.estado.descripcion !== 'ADMITIDO' &&
+                aspirante.estado.descripcion !== 'ENTREVISTA Y PRUEBA' &&
+                aspirante.estado.descripcion !== 'DOCUMENTOS APROBADOS' &&
+                aspirante.estado.descripcion !== 'DOCUMENTOS ENVIADOS'
+              "
+              [class.disabled-button]="
+                aspirante.estado.descripcion !== 'ADMITIDO' &&
+                aspirante.estado.descripcion !== 'ENTREVISTA Y PRUEBA'
+              "
+              class="flex cursor-pointer items-center mx-auto justify-center gap-2 p-2 rounded-md text-white bg-green-500 transition-colors hover:bg-green-700"
+            >
+              Descargar calificaciones
+            </button>
+          </td>
+          <td>{{ aspirante.estado.descripcion }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  <ngx-spinner
+    bdColor="rgba(0, 0, 0, 0.8)"
+    size="medium"
+    color="#fff"
+    type="ball-scale-multiple"
+    [fullScreen]="true"
+    ><p style="color: white">Cargando...</p></ngx-spinner
+  >
+</div>

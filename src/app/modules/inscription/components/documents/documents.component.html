@@ -1,0 +1,66 @@
+<div class="p-4">
+  <div class="mb-4 text-center font-bold text-2xl">
+    <h2>Documentos a enviar</h2>
+  </div>
+  <!-- Listado de documentos -->
+  <div >
+    <div *ngIf="showFinishInscription()">
+      <p-messages severity="info">
+        <ng-template pTemplate>
+          <img src="assets/ufpslogo.png" width="32" />
+            <div class="ml-2 font-bold">Ha completado su proceso de inscripción con éxito.</div>
+        </ng-template>
+      </p-messages>
+    </div>
+    <div class="grid-container w-full">
+      <div *ngFor="let documento of listDocumentsUser; index as i" class="bg-zinc-100 shadow-xl border-t-2 border-zinc-400  rounded-md p-3 w-full">
+        <!-- header para el nombre del documento -->
+        <div class="mb-3">
+          <div class="flex justify-between gap-2 items-center mb-3">
+            <h3 class="font-bold">{{documento.nombre}}</h3>
+            <div class="py-1 px-4 text-white rounded-md inline-block" [ngClass]="bgColorState(documento.estado.id)">
+              <span class="font-bold"> {{documento.estado.id | state | titlecase}} </span>
+            </div>
+          </div>
+          <!-- extensiones -->
+          <span class="text-slate-400"> (Archivo en formato {{getExtensionDocument(documento.idDocumento)}}) </span>
+        </div>
+        <!-- botones -->
+        <div class="flex flex-wrap gap-1" *ngIf="documento.estado.id === 1 || documento.estado.id === 3">
+          <div class="mb-4">
+            <button class="inline-block py-2 px-4 rounded-md text-white font-bold bg-[#e63946] transition-colors hover:bg-[#d62828]" (click)="select.click()">
+            <span #titleBtn >Seleccionar </span>
+            <input type="file" #select (input)="changeTitle(select, titleBtn)" [accept]="getAcceptTypeFile(documento.idDocumento)" class="hidden" maxlength="5MB">
+            </button>
+          </div>
+
+          <div>
+            <button (click)="submitDocument(documento.idDocumento, select, i)" class="bg-[#1b9aaa] inline-block py-2 px-4 rounded-md text-white font-bold transition-colors hover:bg-[#22577a]">
+              <i class="pi pi-save mr-2"></i>
+              Enviar
+            </button>
+          </div>
+
+          <div *ngIf="documento.url_formato">
+            <!-- formato en caso de que si lo tenga  -->
+            <a [href]="'https://'+documento.url_formato" target="_blank" class="bg-[#3a7ca5] inline-block py-2 px-4 rounded-md text-white font-bold transition-colors hover:bg-[#006494]" >
+              <i class="pi pi-link mr-2 "></i>
+              Formato
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ngx-spinner
+bdColor="rgba(0, 0, 0, 0.8)"
+size="medium"
+color="#fff"
+type="ball-scale-multiple"
+[fullScreen]="true"
+>
+<p class="text-white">Cargando...</p>
+</ngx-spinner>

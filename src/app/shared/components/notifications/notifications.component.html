@@ -1,0 +1,39 @@
+<app-dash-navbar></app-dash-navbar>
+<div class="m-6">
+  <!-- title -->
+  <div>
+      <h1 class="font-bold text-2xl mb-4">Notificaciones</h1>
+      <a routerLink="/inscription/aspirante/" class="inline-block font-bold mb-4 py-2 px-6 rounded-md bg-red-600 hover:bg-red-700 text-white transition-colors">Regresar</a>
+  </div>
+
+  <!-- Tabla de listado de encargados -->
+
+  <div class="shadow-md bg-white">
+      <!-- Contenedor para la tabla -->
+      <div class="py-2">
+          <!-- Contenedor para mostrar las data -->
+          <div class="px-4">
+              <p-table [value]="listNotific" [paginator]="true" [rows]="5" [tableStyle]="{'box-shadow': '0 0 15px 15px rgba(0, 0, 0, 1)'}">
+                  <ng-template pTemplate="header">
+                      <tr >
+                          <th>Mensaje</th>
+                          <th>Estado</th>
+                          <th>Lectura</th>
+                      </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-notifc>
+                      <tr>
+                          <td>{{ notifc.enunciado }}</td>
+                          <td> {{ getMensajeLeido(notifc.estado)}}</td>
+                          <td>{{ notifc.fecha_envio | noti }}</td>
+                      </tr>
+                  </ng-template>
+              </p-table>
+              <!-- Contenedor para el contador del total de encargados -->
+              <div class="py-4">
+                 <p class="font-semibold">Total de Notificaciones leídas: 0 </p>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

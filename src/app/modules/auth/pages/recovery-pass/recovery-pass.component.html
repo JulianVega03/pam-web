@@ -1,0 +1,30 @@
+<!-- contenedor del modal -->
+  <div class="w-full max-w-xl bg-white rounded-lg">
+      <!-- contenedor de encabezados -->
+      <div class="p-4 my-6 text-center">
+        <!-- Cerrar modal -->
+        <button (click)="closeModal()" mat-fab extended class="absolute top-5 left-5">
+          <mat-icon>clear</mat-icon>
+        </button>
+          <h2 class="my-4 text-3xl font-bold">Recuperar Contraseña</h2>
+
+          <span class="">Para restablecer su clave de usuario digite el correo con el que se registró en el aplicativo. Al oprimir el botón "Enviar enlace" se enviará un correo con un enlace de recuperación. </span>
+      </div>
+      <!-- contenedor de los inputs -->
+      <div >
+          <form [formGroup]="recoverForm" class="pb-4 mb-6">
+              <!-- Correo electronico para enviar contraseña provisional-->
+              <div class="my-7">
+                  <span class="w-11/12 max-w-xl mx-auto p-float-label">
+                      <input formControlName="email" class="w-full" pInputText id="email" placeholder="aspirante@ufps.edu.co"/>
+                      <label htmlFor="email">Correo</label>
+                  </span>
+              </div>
+              <!-- Boton de enviar enlace -->
+              <div class="flex justify-center w-11/12 max-w-xl mx-auto mt-8">
+                  <p-button (onClick)="recoverPass()" label="Enviar Enlace" styleClass="p-button-danger"></p-button>
+              </div>
+
+          </form>
+      </div>
+  </div>
