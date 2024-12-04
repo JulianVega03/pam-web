@@ -31,6 +31,7 @@ export class PersonalInfoComponent implements OnInit{
   public states: ColombianStatesAndCities[] = [];
   public towns!: any;
   public foreignCountry: boolean = false;
+  public foreignCountry2: boolean = false;
   public isForeign: boolean = false;
   public isDropdownFocused = false;
 
@@ -69,12 +70,13 @@ export class PersonalInfoComponent implements OnInit{
       residenceDirection: ['', Validators.required],
       telephoneNumber: [ '', [ Validators.required, Validators.maxLength(10), Validators.pattern(/^\d{10}$/) ],],
       workingEntity: ['', Validators.required],
+      workingCountry: ['Colombia', Validators.required],
       workingState: ['', Validators.required],
-      workingTown: ['', Validators.required],
+      workingTown: [''],
       workingDirection: ['', Validators.required],
       undergraduateStudies: ['', Validators.required],
       graduatedFromUFPS: ['', Validators.required],
-      postgraduateStudies: ['', Validators.required],
+      postgraduateStudies: [''],
       workingExperience: ['', Validators.required],
     });
 
@@ -108,6 +110,7 @@ export class PersonalInfoComponent implements OnInit{
     this.mainForm.setValue(oldFormValue);
     this.setDateFromLocal(oldFormValue.birthDate, oldFormValue.idExpeditionDate)
     this.checkStranger();
+    this.checkStranger2();
   }
 
   /**
@@ -119,6 +122,17 @@ export class PersonalInfoComponent implements OnInit{
     if(`${this.mainForm.controls['countryOfBirth'].value}`.toLocaleLowerCase() !== 'colombia')
       this.onForeignCountryChange(`${this.mainForm.controls['countryOfBirth'].value}`);
     this.setMunicipio(`${this.mainForm.controls['residenceState'].value}`)
+  }
+
+  /**
+   * Método para comprobar si la información guardada en el  localstorage referente al pais,
+   * corresponde a alguien extranjero.
+   * Estable el pais. departamento y municipio seleccionados si se hizo.
+   */
+  private checkStranger2(){
+    if(`${this.mainForm.controls['workingCountry'].value}`.toLocaleLowerCase() !== 'colombia')
+      this.onForeignCountryChange2(`${this.mainForm.controls['workingCountry'].value}`);
+    this.setMunicipio2(`${this.mainForm.controls['workingState'].value}`)
   }
 
   /**
@@ -154,6 +168,21 @@ export class PersonalInfoComponent implements OnInit{
       }
     });
   }
+  
+  /**
+   * Método para establecer los municipios dado un departamento.
+   * @param selectedState Departamento seleccionado
+   */
+  public setMunicipio2(selectedState: string) {
+    this._clmbnSts.getTowns().subscribe((states) => {
+      const matchingState = states.find(
+        (state) => state.departamento === selectedState
+      );
+      if (matchingState) {
+        this.towns = matchingState.ciudades.map((city) => ({ name: city }));
+      }
+    });
+  }
 
   /**
    * Método para establecer si un aspirante es extranjero
@@ -163,6 +192,17 @@ export class PersonalInfoComponent implements OnInit{
     this.foreignCountry = selectedCountry !== 'Colombia';
     this.mainForm.get('residenceState')?.setValue('Extranjero');
     this.mainForm.get('residenceTown')?.setValue('Extranjero');
+    this.isForeign = true;
+  }
+
+  /**
+   * Método para establecer si un aspirante es extranjero
+   * @param selectedCountry Pais seleccionado
+   */
+  public onForeignCountryChange2(selectedCountry: string) {
+    this.foreignCountry2 = selectedCountry !== 'Colombia';
+    this.mainForm.get('workingState')?.setValue('Extranjero');
+    this.mainForm.get('workingTown')?.setValue('Extranjero');
     this.isForeign = true;
   }
 
@@ -188,6 +228,7 @@ export class PersonalInfoComponent implements OnInit{
     const residenceDirection = this.mainForm.get('residenceDirection')?.value;
     const telephoneNumber = this.mainForm.get('telephoneNumber')?.value;
     const workingEntity = this.mainForm.get('workingEntity')?.value;
+    const workingCountry = this.mainForm.get('workingCountry')?.value;
     const workingState = this.mainForm.get('workingState')?.value;
     const workingTown = this.mainForm.get('workingTown')?.value;
     const workingDirection = this.mainForm.get('workingDirection')?.value;
@@ -216,7 +257,8 @@ export class PersonalInfoComponent implements OnInit{
         residenceDirection,
         telephoneNumber,
         workingEntity,
-        workingTown,
+        workingCountry,
+        workingTown.name,
         workingDirection,
         undergraduateStudies,
         postgraduateStudies,

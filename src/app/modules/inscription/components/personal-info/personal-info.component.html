@@ -379,7 +379,52 @@
               </div>
             </div>
 
-            <!-- Departamento -->
+            <!-- Pais donde trabaja -->
+            <div class="w-full">
+              <label class="text-sm inline-block py-3"
+                >País donde trabaja</label
+              >
+              <div class="p-fluid">
+                <p-dropdown
+                  [options]="countries"
+                  formControlName="workingCountry"
+                  optionLabel="name.common"
+                  placeholder="País donde trabaja"
+                  optionValue="name.common"
+                  (onChange)="onForeignCountryChange2($event.value)"
+                  [filter]="true"
+                  filterBy="name.common"
+                >
+                </p-dropdown>
+              </div>
+            </div>
+
+            <!-- Departamento donde trabaja  -->
+            <ng-container *ngIf="!foreignCountry2">
+              <div class="w-full">
+                <label class="text-sm inline-block py-3"
+                  >Deparmento donde trabaja</label
+                >
+                <div class="p-fluid">
+                  <p-dropdown
+                    [options]="states"
+                    formControlName="workingState"
+                    optionLabel="departamento"
+                    [required]="!foreignCountry2"
+                    (onChange)="setMunicipio2($event.value)"
+                    optionValue="departamento"
+                    placeholder="Departamento"
+                    [disabled]="foreignCountry2"
+                    StyleClass="max-w"
+                    [filter]="true"
+                    filterBy="departamento"
+                  >
+                  </p-dropdown>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- Departamento
             <div>
               <label class="text-sm inline-block py-3"
                 >Departamento donde trabaja</label
@@ -407,9 +452,29 @@
                   <i class="ml-2 pi pi-exclamation-circle"></i>
                 </div>
               </div>
-            </div>
+            </div> -->
 
-            <!-- Municipio -->
+            <!-- Municipio donde trabaja  -->
+            <ng-container *ngIf="!foreignCountry2">
+              <div class="w-full">
+                <label class="text-sm inline-block py-3"
+                  >Municipio donde trabaja</label
+                >
+                <div class="p-fluid">
+                  <p-dropdown
+                    [options]="towns"
+                    optionLabel="name"
+                    formControlName="workingTown"
+                    [required]="!foreignCountry2"
+                    [disabled]="foreignCountry2"
+                    [filter]="true"
+                    filterBy="name"
+                  ></p-dropdown>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- Municipio 
             <div>
               <label class="text-sm inline-block py-3"
                 >Municipio donde trabaja</label
@@ -437,7 +502,7 @@
                   <i class="ml-2 pi pi-exclamation-circle"></i>
                 </div>
               </div>
-            </div>
+            </div>-->
 
             <!-- Direccion -->
             <div>

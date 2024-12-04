@@ -11,6 +11,7 @@ export interface Applicant {
   direccion_residencia: string;
   telefono: string;
   empresa_trabajo: string;
+  pais_trabajo: string;
   departamento_trabajo: string;
   municipio_trabajo: string;
   direccion_trabajo: string;
