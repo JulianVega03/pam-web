@@ -4,6 +4,8 @@ export interface Cohorte {
   fechaFin: Date;
   habilitado: boolean;
   enlace_entrevista: string;
+  enlace_entrevista2: string;
+  enlace_entrevista3: string;
   enlace_prueba: string;
   fechaMaxPrueba: Date;
 }

@@ -38,9 +38,30 @@ export class EntrevistaComponent implements OnInit {
         ),
       ],
     ],
+    enlace2: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(
+          '^(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*/?$'
+        ),
+      ],
+    ],
+    enlace3: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(
+          '^(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*/?$'
+        ),
+      ],
+    ],
   });
   public fechaEntrevistaForm: FormGroup = this._fb.group({
     fechaEntr: ['', [Validators.required]],
+  });
+  public salaEntrevistaForm: FormGroup = this._fb.group({
+    sala: ['', [Validators.required]],
   });
   public puntajeEntrevistaForm: FormGroup = this._fb.group(
     {
@@ -146,6 +167,8 @@ export class EntrevistaComponent implements OnInit {
         if (this.currentCohorte?.enlace_entrevista != '') {
           this.hideButton = !this.hideButton;
           this.entrevistaForm.get('enlace')?.setValue(this.currentCohorte?.enlace_entrevista);
+          this.entrevistaForm.get('enlace2')?.setValue(this.currentCohorte?.enlace_entrevista2);
+          this.entrevistaForm.get('enlace3')?.setValue(this.currentCohorte?.enlace_entrevista3);
         } else {
           this.message = 'No hay enlace de entrevista establecida';
         }
@@ -171,14 +194,14 @@ export class EntrevistaComponent implements OnInit {
    * @params enlace de la entrevista traido del formulario
    * @return
    */
-  public sendLink() {
-    const link = this.entrevistaForm.get('enlace')?.value;
+  public sendLink(sala: string = "") {
+    const link = this.entrevistaForm.get(`enlace${sala}`)?.value;
     this._ngxSpinner.show();
-    this._evalService.linkEntrevt(link).subscribe({
+    this._evalService.linkEntrevt(link, sala).subscribe({
       next: (ok) => {
         this.hideButton = true;
         this._ngxSpinner.hide();
-        this.message = 'Enlace de entrevista actual: ' + link;
+        this.message = `Enlace de entrevista sala ${sala}: ${link}`;
         Swal.fire({
           title: 'Enlace enviado correctamente',
           icon: 'success',
@@ -200,12 +223,13 @@ export class EntrevistaComponent implements OnInit {
     const fechaHoraPrueba = new Date(
       this.fechaEntrevistaForm.controls['fechaEntr'].value
     );
+    const sala = this.salaEntrevistaForm.controls['sala'].value;
     fechaHoraPrueba.setHours(fechaHoraPrueba.getHours() - 5);
     const fechaFormateada = fechaHoraPrueba
       .toISOString()
       .slice(0, 19)
       .replace('.', ' ');
-    this._evalService.fechaEntrevt(id, fechaFormateada).subscribe();
+    this._evalService.fechaEntrevt(id, fechaFormateada, sala).subscribe();
     Swal.fire({
       title: 'Fecha enviada correctamente',
       icon: 'success',

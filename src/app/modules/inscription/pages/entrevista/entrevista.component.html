@@ -12,7 +12,9 @@
     <div class="mb-9">
       <!-- Contenedor de para enviar el link de la reunión -->
       <form [formGroup]="entrevistaForm">
+        
         <div class="flex flex-col w-full">
+          <h2>Sala 1</h2>
           <div class="flex flex-row">
           <input
             type="text"
@@ -63,6 +65,110 @@
           </div>
         </div>
 
+        <div class="flex flex-col w-full">
+          <h2>Sala 2</h2>
+          <div class="flex flex-row">
+          <input
+            type="text"
+            placeholder="https://meet.google.com/......"
+            class="py-3 px-6 w-full rounded-md outline-none inputLink shadow-lg"
+            formControlName="enlace2"
+            id="enlace2"
+          />
+          <button
+          #algo
+          *ngIf="hideButton"
+          (click)="sendLink('2')"
+          [disabled]="entrevistaForm.invalid && fechaEntrevistaForm"
+          class="bg-sky-500 w-[200px] text-white rounded-md font-semibold hover:bg-sky-600 transition-colors"
+        >
+        <i class="pi pi-pencil"></i>
+          Actualizar enlace
+        </button>
+        <button
+          #algo
+          *ngIf="!hideButton"
+          (click)="sendLink('2')"
+          [disabled]="entrevistaForm.invalid && fechaEntrevistaForm"
+          class="bg-red-600 ml-auto px-10 text-white rounded-md font-semibold hover:bg-red-700 transition-colors"
+        >
+          Enviar Enlace
+        </button>
+      </div>
+          <span
+            *ngIf="isValidField('enlace2', 1)"
+            class="text-red-500 font-semibold"
+          >
+            Este campo es requerido
+          </span>
+          <div
+            *ngIf="
+              entrevistaForm.get('enlace2')?.invalid &&
+              (entrevistaForm.get('enlace2')?.dirty ||
+                entrevistaForm.get('enlace2')?.touched)
+            "
+          >
+            <div
+              *ngIf="entrevistaForm.get('enlace2')?.hasError('pattern')"
+              class="mt-5 text-red-500 font-semibold"
+            >
+              URL del enlace de la entrevista incorrecta (https://www... .com)
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col w-full">
+          <h2>Sala 3</h2>
+          <div class="flex flex-row">
+          <input
+            type="text"
+            placeholder="https://meet.google.com/......"
+            class="py-3 px-6 w-full rounded-md outline-none inputLink shadow-lg"
+            formControlName="enlace3"
+            id="enlace3"
+          />
+          <button
+          #algo
+          *ngIf="hideButton"
+          (click)="sendLink('3')"
+          [disabled]="entrevistaForm.invalid && fechaEntrevistaForm"
+          class="bg-sky-500 w-[200px] text-white rounded-md font-semibold hover:bg-sky-600 transition-colors"
+        >
+        <i class="pi pi-pencil"></i>
+          Actualizar enlace
+        </button>
+        <button
+          #algo
+          *ngIf="!hideButton"
+          (click)="sendLink('3')"
+          [disabled]="entrevistaForm.invalid && fechaEntrevistaForm"
+          class="bg-red-600 ml-auto px-10 text-white rounded-md font-semibold hover:bg-red-700 transition-colors"
+        >
+          Enviar Enlace
+        </button>
+      </div>
+          <span
+            *ngIf="isValidField('enlace3', 1)"
+            class="text-red-500 font-semibold"
+          >
+            Este campo es requerido
+          </span>
+          <div
+            *ngIf="
+              entrevistaForm.get('enlace3')?.invalid &&
+              (entrevistaForm.get('enlace3')?.dirty ||
+                entrevistaForm.get('enlace3')?.touched)
+            "
+          >
+            <div
+              *ngIf="entrevistaForm.get('enlace3')?.hasError('pattern')"
+              class="mt-5 text-red-500 font-semibold"
+            >
+              URL del enlace de la entrevista incorrecta (https://www... .com)
+            </div>
+          </div>
+        </div>
+
       </form>
     </div>
 
@@ -82,6 +188,7 @@
                 <th>Nombre</th>
                 <th>Correo</th>
                 <th>Telefono</th>
+                <th>Sala</th>
                 <th>Asignar Horario</th>
                 <th>Calificar</th>
               </tr>
@@ -91,6 +198,25 @@
                 <td>{{ user.nombre }}</td>
                 <td>{{ user.correoPersonal }}</td>
                 <td>{{ user.telefono }}</td>
+                <!-- Columna de la sala -->
+                <td>
+                  <form [formGroup]="salaEntrevistaForm">
+                    <div class="flex flex-col">
+                      <div class="flex flex-row justify-center">
+                        <select
+                          formControlName="sala"
+                          class="form-select w-28 p-3 rounded-l-lg border-slate-200 border-2"
+                          aria-label="Default select example"
+                        >
+                          <option value="1">Sala 1</option>
+                          <option value="2">Sala 2</option>
+                          <option value="3">Sala 3</option>
+                        </select>
+                      </div>
+                    </div>
+                  </form>
+                </td>
+                
                 <!-- Columna de la fecha -->
                 <td>
                   <form [formGroup]="fechaEntrevistaForm">
