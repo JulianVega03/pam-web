@@ -5,6 +5,7 @@ import { UserService } from '../../services/user.service';
 import { CohorteService } from '../../services/cohorte.service';
 import {
   AbstractControl,
+  FormArray,
   FormBuilder,
   FormGroup,
   ValidatorFn,
@@ -25,6 +26,7 @@ export class EntrevistaComponent implements OnInit {
   public hideButton = false;
   public minDate: Date;
   public users: User[] = [];
+  public userForms!: FormArray;
   public isOpenCohorte = false;
   public message = '';
   public currentCohorte!: Cohorte | null;
@@ -60,9 +62,6 @@ export class EntrevistaComponent implements OnInit {
   public fechaEntrevistaForm: FormGroup = this._fb.group({
     fechaEntr: ['', [Validators.required]],
   });
-  public salaEntrevistaForm: FormGroup = this._fb.group({
-    sala: ['', [Validators.required]],
-  });
   public puntajeEntrevistaForm: FormGroup = this._fb.group(
     {
       puntaje: ['', [Validators.required]],
@@ -86,6 +85,8 @@ export class EntrevistaComponent implements OnInit {
     this.minDate = new Date();
 
     this.algo = new ElementRef<any>(null);
+
+    this.userForms = this._fb.array([]);
   }
   /**
    * Método para validar los inputs que no queden vacíos
@@ -115,6 +116,15 @@ export class EntrevistaComponent implements OnInit {
       }
       return null;
     }
+  }
+
+  isValidFieldGroup(controlName: string, userIndex: number): boolean {
+    const control = this.getUserFormGroup(userIndex).get(controlName);
+    return control?.invalid && (control?.dirty || control?.touched) || false;
+  }
+
+  getUserFormGroup(index: number): FormGroup {
+    return this.userForms.at(index) as FormGroup;
   }
 
   /**
@@ -185,6 +195,14 @@ export class EntrevistaComponent implements OnInit {
   getUsers(): void {
     this._userService.listUsersfilter().subscribe((users) => {
       this.users = [...users];
+      this.userForms = this._fb.array(
+        this.users.map((user: User) =>
+          this._fb.group({
+            sala: [user.sala_entrevista || '', Validators.required],
+            fechaEntr: [user.fecha_entrevista ? new Date(user.fecha_entrevista).toISOString().slice(0, 16) : '', Validators.required],
+          })
+        )
+      );
     });
   }
 
@@ -219,11 +237,10 @@ export class EntrevistaComponent implements OnInit {
    * @params id del aspirante y la fecha del formulario
    * @return
    */
-  public sendDate(id: number) {
-    const fechaHoraPrueba = new Date(
-      this.fechaEntrevistaForm.controls['fechaEntr'].value
-    );
-    const sala = this.salaEntrevistaForm.controls['sala'].value;
+  public sendDate(id: number, index: number) {
+    const userForm = this.userForms.at(index) as FormGroup;
+    const fechaHoraPrueba = new Date(userForm.controls['fechaEntr'].value);
+    const sala = userForm.controls['sala'].value;
     fechaHoraPrueba.setHours(fechaHoraPrueba.getHours() - 5);
     const fechaFormateada = fechaHoraPrueba
       .toISOString()

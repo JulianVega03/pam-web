@@ -193,14 +193,14 @@
                 <th>Calificar</th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-user>
+            <ng-template pTemplate="body" let-user let-i="rowIndex">
               <tr class="even:bg-slate-300">
                 <td>{{ user.nombre }}</td>
                 <td>{{ user.correoPersonal }}</td>
                 <td>{{ user.telefono }}</td>
                 <!-- Columna de la sala -->
                 <td>
-                  <form [formGroup]="salaEntrevistaForm">
+                  <form [formGroup]="getUserFormGroup(i)">
                     <div class="flex flex-col">
                       <div class="flex flex-row justify-center">
                         <select
@@ -208,7 +208,7 @@
                           class="form-select w-28 p-3 rounded-l-lg border-slate-200 border-2"
                           aria-label="Default select example"
                         >
-                          <option value="1">Sala 1</option>
+                          <option selected value="1">Sala 1</option>
                           <option value="2">Sala 2</option>
                           <option value="3">Sala 3</option>
                         </select>
@@ -219,7 +219,7 @@
                 
                 <!-- Columna de la fecha -->
                 <td>
-                  <form [formGroup]="fechaEntrevistaForm">
+                  <form [formGroup]="getUserFormGroup(i)">
                     <div class="flex flex-col">
                       <div class="flex flex-row justify-center">
                         <input
@@ -229,14 +229,14 @@
                         />
                         <button
                           class="rounded-r-lg bg-sky-600 hover:bg-sky-700 py-2 px-3"
-                          (click)="sendDate(user.id)"
-                          [disabled]="fechaEntrevistaForm.invalid"
+                          (click)="sendDate(user.id, i)"
+                          [disabled]="userForms.at(i).invalid"
                         >
                           <i class="pi pi-check" style="color: white"></i>
                         </button>
                       </div>
                       <span
-                        *ngIf="isValidField('fechaEntr', 2)"
+                      *ngIf="isValidFieldGroup('fechaEntr', i)"
                         class="text-red-500 font-semibold"
                       >
                         Este campo es requerido
