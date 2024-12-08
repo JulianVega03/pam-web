@@ -29,6 +29,7 @@ export class EntrevistaComponent implements OnInit {
   public userForms!: FormArray;
   public isOpenCohorte = false;
   public message = '';
+  public availableRooms: string[] = [];
   public currentCohorte!: Cohorte | null;
   public entrevistaForm: FormGroup = this._fb.group({
     enlace: [
@@ -182,8 +183,19 @@ export class EntrevistaComponent implements OnInit {
         } else {
           this.message = 'No hay enlace de entrevista establecida';
         }
+        this.updateAvailableRooms();
       },
     });
+  }
+
+  updateAvailableRooms(): void {
+    // Reiniciar el array de salas disponibles
+    this.availableRooms = [];
+    
+    // Añadir las salas que tengan enlaces válidos
+    if (this.entrevistaForm.get('enlace')?.getRawValue()) this.availableRooms.push('1');
+    if (this.entrevistaForm.get('enlace2')?.getRawValue()) this.availableRooms.push('2');
+    if (this.entrevistaForm.get('enlace3')?.getRawValue()) this.availableRooms.push('3');
   }
 
   /**
@@ -203,6 +215,7 @@ export class EntrevistaComponent implements OnInit {
           })
         )
       );
+      this.updateAvailableRooms();
     });
   }
 
@@ -227,6 +240,7 @@ export class EntrevistaComponent implements OnInit {
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Aceptar',
         });
+        this.updateAvailableRooms();
       },
     });
   }
