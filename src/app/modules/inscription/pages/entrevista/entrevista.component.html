@@ -184,21 +184,21 @@
                 </td>
                 <!-- Columna de la calificación -->
                 <td>
-                  <form [formGroup]="puntajeEntrevistaForm">
+                  <form [formGroup]="getPuntajeEntrevistaForms(i)">
                     <div class="flex flex-col">
                       <div class="flex flex-row justify-center">
                         <input type="text" class="w-28 p-3 rounded-l-lg border-slate-200 border-2"
-                          formControlName="puntaje" [disabled]="puntajeEntrevistaForm.invalid" />
+                          formControlName="puntaje" [disabled]="puntajeEntrevistaForms.at(i).invalid" />
 
                         <button class="rounded-r-lg bg-sky-600 hover:bg-sky-700 py-2 px-3"
-                          (click)="sendPuntaje(user.id)" [disabled]="puntajeEntrevistaForm.invalid">
+                          (click)="sendPuntaje(user.id, i)" [disabled]="puntajeEntrevistaForms.at(i).invalid">
                           <i class="pi pi-check" style="color: white"></i>
                         </button>
                       </div>
-                      <span *ngIf="isValidField('puntaje', 3)" class="text-red-500 font-semibold">
+                      <span *ngIf="isValidFieldPuntaje('puntaje', i)" class="text-red-500 font-semibold">
                         Este campo es requerido
                       </span>
-                      <span *ngIf="puntajeEntrevistaForm.hasError('mayor15')" class="text-red-500 font-semibold">
+                      <span *ngIf="puntajeEntrevistaForms.at(i).hasError('mayor15')" class="text-red-500 font-semibold">
                         Máximo puntaje por asignar es 15
                       </span>
                     </div>

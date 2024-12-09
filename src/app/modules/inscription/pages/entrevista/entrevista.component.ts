@@ -27,6 +27,7 @@ export class EntrevistaComponent implements OnInit {
   public minDate: Date;
   public users: User[] = [];
   public userForms!: FormArray;
+  public puntajeEntrevistaForms!: FormArray;
   public isOpenCohorte = false;
   public message = '';
   public availableRooms: string[] = [];
@@ -63,14 +64,7 @@ export class EntrevistaComponent implements OnInit {
   public fechaEntrevistaForm: FormGroup = this._fb.group({
     fechaEntr: ['', [Validators.required]],
   });
-  public puntajeEntrevistaForm: FormGroup = this._fb.group(
-    {
-      puntaje: ['', [Validators.required]],
-    },
-    { validator: this.matchingFieldsValidator('puntaje') }
-  );
-
-  //@ViewChild(algo) algo: any;
+  
   @ViewChild('algo') algo: ElementRef<any>;
 
   constructor(
@@ -88,6 +82,7 @@ export class EntrevistaComponent implements OnInit {
     this.algo = new ElementRef<any>(null);
 
     this.userForms = this._fb.array([]);
+    this.puntajeEntrevistaForms = this._fb.array([]);
   }
   /**
    * Método para validar los inputs que no queden vacíos
@@ -107,14 +102,7 @@ export class EntrevistaComponent implements OnInit {
           this.fechaEntrevistaForm.controls[field].errors &&
           this.fechaEntrevistaForm.controls[field].touched
         );
-      } else {
-        if (type == 3) {
-          return (
-            this.puntajeEntrevistaForm.controls[field].errors &&
-            this.puntajeEntrevistaForm.controls[field].touched
-          );
-        }
-      }
+      } 
       return null;
     }
   }
@@ -124,8 +112,17 @@ export class EntrevistaComponent implements OnInit {
     return control?.invalid && (control?.dirty || control?.touched) || false;
   }
 
+  isValidFieldPuntaje(controlName: string, userIndex: number): boolean {
+    const control = this.getPuntajeEntrevistaForms(userIndex).get(controlName);
+    return control?.invalid && (control?.dirty || control?.touched) || false;
+  }
+
   getUserFormGroup(index: number): FormGroup {
     return this.userForms.at(index) as FormGroup;
+  }
+
+  getPuntajeEntrevistaForms(index: number): FormGroup {
+    return this.puntajeEntrevistaForms.at(index) as FormGroup;
   }
 
   /**
@@ -157,10 +154,6 @@ export class EntrevistaComponent implements OnInit {
     }
     if (this.fechaEntrevistaForm.invalid) {
       this.fechaEntrevistaForm.markAllAsTouched();
-      return;
-    }
-    if (this.puntajeEntrevistaForm.invalid) {
-      this.puntajeEntrevistaForm.markAllAsTouched();
       return;
     }
   }
@@ -213,6 +206,13 @@ export class EntrevistaComponent implements OnInit {
             sala: [user.sala_entrevista || '', Validators.required],
             fechaEntr: [user.fecha_entrevista ? new Date(user.fecha_entrevista).toISOString().slice(0, 16) : '', Validators.required],
           })
+        )
+      );
+      this.puntajeEntrevistaForms = this._fb.array(
+        this.users.map((user: User) =>
+          this._fb.group({
+            puntaje: [user.puntaje_entrevista || '', Validators.required],
+          }, { validator: this.matchingFieldsValidator('puntaje') })
         )
       );
       this.updateAvailableRooms();
@@ -276,8 +276,9 @@ export class EntrevistaComponent implements OnInit {
    * @params id del aspirante y el puntaje del formulario
    * @return
    */
-  public sendPuntaje(id: number) {
-    const puntaje = this.puntajeEntrevistaForm.get('puntaje')?.value;
+  public sendPuntaje(id: number, index: number) {
+    const form = this.puntajeEntrevistaForms.at(index) as FormGroup;
+    const puntaje = form.controls['puntaje'].value;
     this._evalService.punjateEntrevista(id, puntaje).subscribe({
       next: (ok) => {
         Swal.fire({
