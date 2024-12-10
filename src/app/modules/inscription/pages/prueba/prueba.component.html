@@ -101,14 +101,14 @@
                 <th>Calificar</th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-user>
+            <ng-template pTemplate="body" let-user let-i="rowIndex">
               <tr class="even:bg-slate-300">
                 <td>{{ user.nombre }}</td>
                 <td>{{ user.correoPersonal }}</td>
                 <td>{{ user.telefono }}</td>
                 <!-- Columna calificacion -->
                 <td>
-                  <form [formGroup]="puntajePruebaForm">
+                  <form [formGroup]="getPuntajePruebaForms(i)">
                     <div class="flex flex-col">
                       <div class="flex flex-row justify-center">
                         <input
@@ -118,20 +118,20 @@
                         />
                         <button
                           class="rounded-r-lg bg-sky-600 hover:bg-sky-700 py-3 px-4"
-                          (click)="sendPuntaje(user.id)"
-                          [disabled]="puntajePruebaForm.invalid"
+                          (click)="sendPuntaje(user.id, i)"
+                          [disabled]="puntajePruebaForms.at(i).invalid"
                         >
                           <i class="pi pi-check" style="color: white"></i>
                         </button>
                       </div>
                       <span
-                        *ngIf="isValidField('puntaje', 2)"
+                        *ngIf="isValidFieldPuntaje('puntaje', i)"
                         class="text-red-500 font-semibold"
                       >
                         Este campo es requerido
                       </span>
                       <span
-                        *ngIf="puntajePruebaForm.hasError('mayor40')"
+                        *ngIf="puntajePruebaForms.at(i).hasError('mayor15')"
                         class="text-red-500 font-semibold"
                       >
                         Máximo puntaje por asignar es 40

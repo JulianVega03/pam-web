@@ -29,6 +29,7 @@
                                 <a
                                 routerLinkActive="bg-gray-200"
                                 [routerLink]="child.link ? child.link : null"
+                                (click)="child.title === 'Aspirantes' ? onDownloadExcel() : null"
                                 class="flex items-center justify-between w-full pl-8 pr-3 py-3  hover:bg-gray-200 hover:text-black font-semibold hover:font-bold transition-all cursor-pointer">
                                <span> <i [class]="child.icon" class="mx-3"></i> {{child.title}} </span>
                                <span *ngIf="child.children">

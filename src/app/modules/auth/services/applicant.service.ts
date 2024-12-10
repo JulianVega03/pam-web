@@ -42,7 +42,8 @@ export class ApplicantService {
     estudios_posgrados: string,
     promedioPregrado: string,
     exp_laboral: string,
-    es_egresado_ufps: boolean
+    es_egresado_ufps: boolean,
+    lugarExpedicion: string
   ): Observable<Applicant> {
     const url = `${environment.apiBaseUrl}/aspirante`;
 
@@ -86,6 +87,7 @@ export class ApplicantService {
         exp_laboral,
         es_egresado_ufps,
         promedioPregrado,
+        lugarExpedicion
       },
       httpOptions
     );

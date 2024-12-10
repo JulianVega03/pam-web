@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { User } from 'src/app/data/interfaces/user.example.interface';
 import { DatePipe } from '@angular/common';
+import { ExcelService } from '../../services/excel.service';
 
 @Component({
   selector: 'app-table-user',
@@ -12,7 +13,7 @@ export class TableUserComponent implements OnChanges{
   
   @Input() user:User = {} as User;
   
-  constructor(private datePipe: DatePipe) {}
+  constructor(private datePipe: DatePipe, private excelService: ExcelService) {}
 
   
   estructureTH: any[] = [
@@ -37,13 +38,16 @@ export class TableUserComponent implements OnChanges{
         { tableH:'correos', value: this.user.correoPersonal },
         { tableH:'Tipo documento de identidad', value: this.user.documentType },
         { tableH:'Número de documento', value: this.user.no_documento },
+        { tableH:'Lugar de expedición del documento de identidad', value: this.user.lugarExpedicion },
         { tableH:'Fecha expedición documento', value: this.datePipe.transform(this.user.fecha_exp_di, 'dd/MM/yyyy') },
         { tableH:'Fecha de nacimiento', value: this.datePipe.transform(this.user.fecha_nac, 'dd/MM/yyyy') },
         { tableH:'genero', value: this.user.genero },
         { tableH:'Estado Civil', value: this.user.estadoCivilTypes },
         { tableH:'Grupo Étnico', value: this.user.grupoEtnicoTypes },
         { tableH:'Pueblo indígena', value: this.user.puebloIndigenaTypes },
+        { tableH:'Otro pueblo indigena', value: this.user.otroPueblo? this.user.otroPueblo:'No Aplica' },
         { tableH:'Persona con discapacidad', value: this.user.poseeDiscapacidadTypes },
+        { tableH:'Discapacidad', value: this.user.discapacidadTypes?this.user.discapacidadTypes: 'No Aplica' },
         { tableH:'Persona con Capacidad Excepcional', value: this.user.capacidadxcepcionalTypes }
       ];
 
@@ -78,8 +82,20 @@ export class TableUserComponent implements OnChanges{
     }
   }
   
-
-
-
-  // 'celular','dirección','correo','fecha registro', 'estado actual'
+  downloadExcel() {
+    if (this.user.id) {
+      this.excelService.downloadExcel(this.user.id.toString()).subscribe(
+        (response: Blob) => {
+          const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = `aspirante-${this.user.nombre?.toLocaleLowerCase()}-${this.user.apellido?.toLocaleLowerCase()}-data.xlsx`;
+          link.click();
+        },
+        (error) => {
+          console.error('Error al descargar el archivo:', error);
+        }
+      );
+    }
+  }
 }

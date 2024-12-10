@@ -21,4 +21,5 @@ export interface Applicant {
   es_egresado_ufps: boolean;
   sala_entrevista: string;
   fecha_entrevista: string;
+  lugarExpedicion: string;
 }

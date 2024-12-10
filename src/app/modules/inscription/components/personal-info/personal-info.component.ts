@@ -221,6 +221,7 @@ export class PersonalInfoComponent implements OnInit{
     this.mainForm = this._fb.group({
       name: ['', Validators.required],
       familyName: ['', Validators.required],
+      lugarExpedicion: ['', Validators.required],
       id: ['', [Validators.required, Validators.pattern(/^[0-9]*$/)]],
       idExpeditionDate: ['', Validators.required],
       birthDate: ['', Validators.required],
@@ -396,6 +397,7 @@ export class PersonalInfoComponent implements OnInit{
   public registerApplicant() {
     const name = this.mainForm.get('name')?.value;
     const familyName = this.mainForm.get('familyName')?.value;
+    const lugarExpedicion = this.mainForm.get('lugarExpedicion')?.value;
     const countryOfBirth = this.mainForm.get('countryOfBirth')?.value;
     const residenceState = this.mainForm.get('residenceState')?.value;
     const residenceTown = this.mainForm.get('residenceTown')?.value;
@@ -472,7 +474,8 @@ export class PersonalInfoComponent implements OnInit{
         postgraduateStudies,
         promedioPregrado,
         workingExperience,
-        graduatedFromUFPS
+        graduatedFromUFPS,
+        lugarExpedicion
       )
       .subscribe({
         next: (res) => {

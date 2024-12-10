@@ -6,6 +6,7 @@ import { CohorteService } from '../../services/cohorte.service';
 import {
   AbstractControl,
   FormBuilder,
+  FormArray,
   FormGroup,
   ValidatorFn,
   Validators,
@@ -24,6 +25,7 @@ export class PruebaComponent implements OnInit {
   public users: User[] = [];
   public isOpenCohorte = false;
   public hideButton = false;
+  public puntajePruebaForms!: FormArray;
   public currentCohorte!: Cohorte | null;
 
   public pruebaForm: FormGroup = this._fb.group({
@@ -53,6 +55,7 @@ export class PruebaComponent implements OnInit {
     private _evalService: EvaluactionService,
     private _ngxSpinner: NgxSpinnerService
   ) {
+    this.puntajePruebaForms = this._fb.array([]);
     this.minDate = new Date();
   }
   /**
@@ -109,6 +112,15 @@ export class PruebaComponent implements OnInit {
     }
   }
 
+  isValidFieldPuntaje(controlName: string, userIndex: number): boolean {
+    const control = this.getPuntajePruebaForms(userIndex).get(controlName);
+    return control?.invalid && (control?.dirty || control?.touched) || false;
+  }
+
+  getPuntajePruebaForms(index: number): FormGroup {
+    return this.puntajePruebaForms.at(index) as FormGroup;
+  }
+
   ngOnInit(): void {
     this.cohorteS.currentCohorte.subscribe({
       next: (res) => {
@@ -140,6 +152,13 @@ export class PruebaComponent implements OnInit {
   getUsers(): void {
     this._userService.listUsersfilter().subscribe((users) => {
       this.users = [...users];
+      this.puntajePruebaForms = this._fb.array(
+        this.users.map((user: User) =>
+          this._fb.group({
+            puntaje: [user.puntaje_prueba || '', Validators.required],
+          }, { validator: this.matchingFieldsValidator('puntaje') })
+        )
+      );
     });
   }
 
@@ -178,8 +197,9 @@ export class PruebaComponent implements OnInit {
    * @params id del aspirante y el puntaje del formulario
    * @return
    */
-  public sendPuntaje(id: number) {
-    const puntaje = this.puntajePruebaForm.get('puntaje')?.value;
+  public sendPuntaje(id: number, index: number) {
+    const form = this.puntajePruebaForms.at(index) as FormGroup;
+    const puntaje = form.controls['puntaje'].value;
     this._evalService.punjatePrueba(id, puntaje).subscribe({
       next: (ok) => {
         Swal.fire({

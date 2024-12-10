@@ -50,7 +50,20 @@ export const sidebarItems: ISidebar[]  = [
                 link: ['/inscription/backlog/admin/listado-general']
             }
         ]
-   }
+   },
+   {
+        title: 'Reportes',
+        icon: 'pi pi-file',
+        roles: [Role.ADMIN],
+        children: [
+            {
+                title: 'Aspirantes',
+                icon: 'pi pi-download',
+                roles: [Role.ADMIN],
+                link: ['/inscription/backlog/admin/seleccionar-admitidos']
+            }
+        ]
+    }
 
 
 ]

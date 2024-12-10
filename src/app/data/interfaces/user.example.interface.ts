@@ -40,6 +40,10 @@ export interface User {
     empresa_trabajo?: string;
     tipoVinculacionTypes?: string;
     promedioPregrado?: string;
+
+    otroPueblo?: string;
+    discapacidadTypes?: string;
+    lugarExpedicion?: string;
 }
 
 export interface Estado {
