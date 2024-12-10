@@ -59,8 +59,7 @@ export const sidebarItems: ISidebar[]  = [
             {
                 title: 'Aspirantes',
                 icon: 'pi pi-download',
-                roles: [Role.ADMIN],
-                link: ['/inscription/backlog/admin/seleccionar-admitidos']
+                roles: [Role.ADMIN]
             }
         ]
     }
