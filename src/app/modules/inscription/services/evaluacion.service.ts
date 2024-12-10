@@ -26,9 +26,9 @@ export class EvaluactionService {
    * @params Enlace de la entrevista y la autorización de administrador
    * @return
    */
-  public linkEntrevt(enlace: string): Observable<Evaluacion> {
+  public linkEntrevt(enlace: string, sala = ""): Observable<Evaluacion> {
     // Url del back por post para enviar el enlace de la entrevista
-    const url = `${environment.apiBaseUrl}/cohorte/entrevistaEnlace?enlace=${enlace}`;
+    const url = `${environment.apiBaseUrl}/cohorte/entrevistaEnlace${sala}?enlace=${enlace}`;
     // Autorización como ADMIN del token para ejecutar el método
     return this.http.post<Evaluacion>(url, { enlace }, this.httpOptions);
   }
@@ -40,9 +40,9 @@ export class EvaluactionService {
    * @params Enlace de la entrevista y la autorización de administrador
    * @return
    */
-  public fechaEntrevt(id: number, fecha: string): Observable<Evaluacion> {
+  public fechaEntrevt(id: number, fecha: string, sala: string): Observable<Evaluacion> {
     // Url del back por post para enviar el enlace de la entrevista
-    const url = `${environment.apiBaseUrl}/aspirante/horarioEntrevista?id=${id}&fecha_entrevista=${fecha}`;
+    const url = `${environment.apiBaseUrl}/aspirante/horarioEntrevista?id=${id}&fecha_entrevista=${fecha}&sala=${sala}`;
     // Autorización como ADMIN del token para ejecutar el método0
     return this.http.post<Evaluacion>(url, { id, fecha }, this.httpOptions);
   }

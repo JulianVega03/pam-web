@@ -11,13 +11,13 @@ export const sidebarItems: ISidebar[]  = [
     {
         title: 'Entrevista',
         icon: 'pi pi-users',
-        roles: [Role.ADMIN],
+        roles: [Role.ADMIN, Role.ENCARGADO],
         link: ['/inscription/backlog/admin/entrevista']
     },
     {
         title: 'Prueba',
         icon: 'pi pi-pencil',
-        roles: [Role.ADMIN],
+        roles: [Role.ADMIN, Role.ENCARGADO],
         link: ['/inscription/backlog/admin/prueba']
     },
     {

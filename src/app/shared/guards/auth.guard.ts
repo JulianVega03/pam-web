@@ -26,7 +26,7 @@ export class AuthGuard implements CanActivate, CanActivateChild{
     if( this.roleActivate == 'ADMIN' && state.url.includes('/admin') )
       return true
       
-    if( this.roleActivate == 'ENCARGADO' && state.url.includes('/encargado') )
+    if( this.roleActivate == 'ENCARGADO' && state.url.includes('/admin') )
       return true
 
     if( this.roleActivate == 'USUARIO' && state.url.includes('/aspirante') )

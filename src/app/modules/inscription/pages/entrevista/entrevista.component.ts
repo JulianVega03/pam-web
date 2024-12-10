@@ -5,6 +5,7 @@ import { UserService } from '../../services/user.service';
 import { CohorteService } from '../../services/cohorte.service';
 import {
   AbstractControl,
+  FormArray,
   FormBuilder,
   FormGroup,
   ValidatorFn,
@@ -25,11 +26,32 @@ export class EntrevistaComponent implements OnInit {
   public hideButton = false;
   public minDate: Date;
   public users: User[] = [];
+  public userForms!: FormArray;
+  public puntajeEntrevistaForms!: FormArray;
   public isOpenCohorte = false;
   public message = '';
+  public availableRooms: string[] = [];
   public currentCohorte!: Cohorte | null;
   public entrevistaForm: FormGroup = this._fb.group({
     enlace: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(
+          '^(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*/?$'
+        ),
+      ],
+    ],
+    enlace2: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(
+          '^(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*/?$'
+        ),
+      ],
+    ],
+    enlace3: [
       '',
       [
         Validators.required,
@@ -42,14 +64,7 @@ export class EntrevistaComponent implements OnInit {
   public fechaEntrevistaForm: FormGroup = this._fb.group({
     fechaEntr: ['', [Validators.required]],
   });
-  public puntajeEntrevistaForm: FormGroup = this._fb.group(
-    {
-      puntaje: ['', [Validators.required]],
-    },
-    { validator: this.matchingFieldsValidator('puntaje') }
-  );
-
-  //@ViewChild(algo) algo: any;
+  
   @ViewChild('algo') algo: ElementRef<any>;
 
   constructor(
@@ -65,6 +80,9 @@ export class EntrevistaComponent implements OnInit {
     this.minDate = new Date();
 
     this.algo = new ElementRef<any>(null);
+
+    this.userForms = this._fb.array([]);
+    this.puntajeEntrevistaForms = this._fb.array([]);
   }
   /**
    * Método para validar los inputs que no queden vacíos
@@ -84,16 +102,27 @@ export class EntrevistaComponent implements OnInit {
           this.fechaEntrevistaForm.controls[field].errors &&
           this.fechaEntrevistaForm.controls[field].touched
         );
-      } else {
-        if (type == 3) {
-          return (
-            this.puntajeEntrevistaForm.controls[field].errors &&
-            this.puntajeEntrevistaForm.controls[field].touched
-          );
-        }
-      }
+      } 
       return null;
     }
+  }
+
+  isValidFieldGroup(controlName: string, userIndex: number): boolean {
+    const control = this.getUserFormGroup(userIndex).get(controlName);
+    return control?.invalid && (control?.dirty || control?.touched) || false;
+  }
+
+  isValidFieldPuntaje(controlName: string, userIndex: number): boolean {
+    const control = this.getPuntajeEntrevistaForms(userIndex).get(controlName);
+    return control?.invalid && (control?.dirty || control?.touched) || false;
+  }
+
+  getUserFormGroup(index: number): FormGroup {
+    return this.userForms.at(index) as FormGroup;
+  }
+
+  getPuntajeEntrevistaForms(index: number): FormGroup {
+    return this.puntajeEntrevistaForms.at(index) as FormGroup;
   }
 
   /**
@@ -127,10 +156,6 @@ export class EntrevistaComponent implements OnInit {
       this.fechaEntrevistaForm.markAllAsTouched();
       return;
     }
-    if (this.puntajeEntrevistaForm.invalid) {
-      this.puntajeEntrevistaForm.markAllAsTouched();
-      return;
-    }
   }
 
   ngOnInit(): void {
@@ -146,11 +171,24 @@ export class EntrevistaComponent implements OnInit {
         if (this.currentCohorte?.enlace_entrevista != '') {
           this.hideButton = !this.hideButton;
           this.entrevistaForm.get('enlace')?.setValue(this.currentCohorte?.enlace_entrevista);
+          this.entrevistaForm.get('enlace2')?.setValue(this.currentCohorte?.enlace_entrevista2);
+          this.entrevistaForm.get('enlace3')?.setValue(this.currentCohorte?.enlace_entrevista3);
         } else {
           this.message = 'No hay enlace de entrevista establecida';
         }
+        this.updateAvailableRooms();
       },
     });
+  }
+
+  updateAvailableRooms(): void {
+    // Reiniciar el array de salas disponibles
+    this.availableRooms = [];
+    
+    // Añadir las salas que tengan enlaces válidos
+    if (this.entrevistaForm.get('enlace')?.getRawValue()) this.availableRooms.push('1');
+    if (this.entrevistaForm.get('enlace2')?.getRawValue()) this.availableRooms.push('2');
+    if (this.entrevistaForm.get('enlace3')?.getRawValue()) this.availableRooms.push('3');
   }
 
   /**
@@ -162,6 +200,22 @@ export class EntrevistaComponent implements OnInit {
   getUsers(): void {
     this._userService.listUsersfilter().subscribe((users) => {
       this.users = [...users];
+      this.userForms = this._fb.array(
+        this.users.map((user: User) =>
+          this._fb.group({
+            sala: [user.sala_entrevista || '', Validators.required],
+            fechaEntr: [user.fecha_entrevista ? new Date(user.fecha_entrevista).toISOString().slice(0, 16) : '', Validators.required],
+          })
+        )
+      );
+      this.puntajeEntrevistaForms = this._fb.array(
+        this.users.map((user: User) =>
+          this._fb.group({
+            puntaje: [user.puntaje_entrevista || '', Validators.required],
+          }, { validator: this.matchingFieldsValidator('puntaje') })
+        )
+      );
+      this.updateAvailableRooms();
     });
   }
 
@@ -171,14 +225,14 @@ export class EntrevistaComponent implements OnInit {
    * @params enlace de la entrevista traido del formulario
    * @return
    */
-  public sendLink() {
-    const link = this.entrevistaForm.get('enlace')?.value;
+  public sendLink(sala: string = "") {
+    const link = this.entrevistaForm.get(`enlace${sala}`)?.value;
     this._ngxSpinner.show();
-    this._evalService.linkEntrevt(link).subscribe({
+    this._evalService.linkEntrevt(link, sala).subscribe({
       next: (ok) => {
         this.hideButton = true;
         this._ngxSpinner.hide();
-        this.message = 'Enlace de entrevista actual: ' + link;
+        this.message = `Enlace de entrevista sala ${sala}: ${link}`;
         Swal.fire({
           title: 'Enlace enviado correctamente',
           icon: 'success',
@@ -186,6 +240,7 @@ export class EntrevistaComponent implements OnInit {
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Aceptar',
         });
+        this.updateAvailableRooms();
       },
     });
   }
@@ -196,16 +251,16 @@ export class EntrevistaComponent implements OnInit {
    * @params id del aspirante y la fecha del formulario
    * @return
    */
-  public sendDate(id: number) {
-    const fechaHoraPrueba = new Date(
-      this.fechaEntrevistaForm.controls['fechaEntr'].value
-    );
+  public sendDate(id: number, index: number) {
+    const userForm = this.userForms.at(index) as FormGroup;
+    const fechaHoraPrueba = new Date(userForm.controls['fechaEntr'].value);
+    const sala = userForm.controls['sala'].value;
     fechaHoraPrueba.setHours(fechaHoraPrueba.getHours() - 5);
     const fechaFormateada = fechaHoraPrueba
       .toISOString()
       .slice(0, 19)
       .replace('.', ' ');
-    this._evalService.fechaEntrevt(id, fechaFormateada).subscribe();
+    this._evalService.fechaEntrevt(id, fechaFormateada, sala).subscribe();
     Swal.fire({
       title: 'Fecha enviada correctamente',
       icon: 'success',
@@ -221,8 +276,9 @@ export class EntrevistaComponent implements OnInit {
    * @params id del aspirante y el puntaje del formulario
    * @return
    */
-  public sendPuntaje(id: number) {
-    const puntaje = this.puntajeEntrevistaForm.get('puntaje')?.value;
+  public sendPuntaje(id: number, index: number) {
+    const form = this.puntajeEntrevistaForms.at(index) as FormGroup;
+    const puntaje = form.controls['puntaje'].value;
     this._evalService.punjateEntrevista(id, puntaje).subscribe({
       next: (ok) => {
         Swal.fire({
